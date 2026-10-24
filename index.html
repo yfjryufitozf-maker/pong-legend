@@ -1,1746 +1,530 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>أسطورة البونغ | Pong Legend</title>
 <style>
-  @media screen and (orientation: portrait) {
-    html { transform: rotate(-90deg); transform-origin: left top; width: 100vh; height: 100vw; overflow: hidden; position: absolute; top: 100%; left: 0; }
-  }
-</style>
-<title>Pong Legend</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Tahoma,sans-serif}
-body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);min-height:100vh;display:flex;justify-content:center;align-items:center;color:#fff;overflow:hidden}
-body.light{background:linear-gradient(135deg,#e0eaff,#a0c4ff,#c0e0ff);color:#111}
-#app{width:950px;max-width:98vw;background:rgba(20,20,40,.95);border-radius:20px;padding:18px;position:relative;border:2px solid #00ffff55;box-shadow:0 0 50px rgba(0,255,255,.35);max-height:98vh;overflow-y:auto}
-body.light #app{background:rgba(255,255,255,.96)}
-.scr{display:none}.scr.on{display:block}
-h1{text-align:center;font-size:2.5em;background:linear-gradient(90deg,#0ff,#f0f,#ff0);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px}
-h2{text-align:center;color:#0ff;margin-bottom:12px}body.light h2{color:#06c}
-button{padding:11px 16px;font-size:1em;font-weight:bold;background:#0ff2;color:#fff;border:2px solid #0ff;border-radius:11px;cursor:pointer;transition:.2s;margin:3px}
-body.light button{color:#036}
-button:hover{background:#0ff;color:#000;transform:translateY(-2px)}
-button:disabled{opacity:.4;cursor:not-allowed;transform:none}
-#top{position:absolute;top:10px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;z-index:99;flex-wrap:wrap;gap:5px}
-#cb{background:linear-gradient(135deg,#ffd700,#fa0);color:#000;padding:6px 13px;border-radius:20px;font-weight:bold;font-size:.9em}
-#gb{background:linear-gradient(135deg,#0ff,#08f);color:#000;padding:6px 13px;border-radius:20px;font-weight:bold;font-size:.9em;margin-right:6px}
-#top button{padding:5px 11px;font-size:.8em;border-radius:20px;margin:0 2px}
-.menu{display:flex;flex-direction:column;gap:9px;max-width:340px;margin:0 auto}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;max-height:60vh;overflow-y:auto;padding:4px}
-.card{background:#f0f1;border:2px solid #f0f4;border-radius:12px;padding:12px;text-align:center;cursor:pointer;transition:.2s;position:relative}
-.card:hover{background:#f0f3;border-color:#f0f;transform:translateY(-3px)}
-.card .ic{font-size:1.9em;margin-bottom:5px}
-.card .tt{font-weight:bold;font-size:1em;margin-bottom:3px}
-.card .dd{font-size:.75em;color:#aaa}
-.card .hs{position:absolute;top:5px;left:5px;font-size:.7em;background:#ffd700;color:#000;padding:2px 7px;border-radius:8px;font-weight:bold}
-.item{background:#0ff1;border:2px solid #0ff4;border-radius:12px;padding:10px;text-align:center}
-.item.own{border-color:#0f8;background:#0f81}
-.item.eq{border-color:#ffd700;box-shadow:0 0 15px #ffd70088}
-.item canvas{display:block;margin:0 auto 6px;border-radius:8px;background:#050515}
-.item .nn{font-weight:bold;font-size:.9em;margin-bottom:3px}
-.item .pp{color:#ffd700;font-size:.85em;margin-bottom:6px}
-.item button{width:100%;padding:5px;font-size:.8em}
-#cv{display:block;margin:0 auto;background:#000;border-radius:10px;max-width:100%;touch-action:none}
-#info{display:flex;justify-content:space-between;padding:8px 16px;font-weight:bold;font-size:1.2em;align-items:center;flex-wrap:wrap;gap:4px}
-#over,#pause{position:absolute;inset:0;background:#000e;display:none;flex-direction:column;justify-content:center;align-items:center;border-radius:20px;z-index:50;gap:15px}
-#over.show,#pause.show{display:flex}
-.ach{background:#ffd70011;border:2px solid #ffd70044;border-radius:10px;padding:10px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
-.ach.un{background:#0f81;border-color:#0f8}
-.ach .aci{font-size:1.8em}
-.ach .aci2{flex:1;text-align:right}
-.ach .an{font-weight:bold;margin-bottom:2px}
-.ach .ad{font-size:.8em;color:#aaa}
-.lb{background:#0ff1;padding:8px 12px;border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between}
-.lb.t1{background:linear-gradient(90deg,#ffd70044,#ffd70011);border:1px solid #ffd700}
-.lb.t2{background:linear-gradient(90deg,#c0c0c044,#c0c0c011)}
-.lb.t3{background:linear-gradient(90deg,#cd7f3244,#cd7f3211)}
-.sr{display:flex;justify-content:space-between;padding:7px 12px;background:#0ff1;border-radius:8px;margin-bottom:6px}
-input[type=text]{padding:10px;border-radius:8px;border:2px solid #0ff;background:#0003;color:#fff;font-size:1em;width:100%;max-width:300px;display:block;margin:6px auto}
-.hide{display:none!important}
-.tabs{display:flex;gap:6px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
-.tabs button{padding:7px 11px;font-size:.8em}
-::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:#0ff6;border-radius:4px}
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; -webkit-user-select: none; }
+    body { background: #0f0c29; color: #fff; overflow: hidden; width: 100vw; height: 100vh; position: fixed; }
+    #app { width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
+    .scr { display: none; width: 100%; height: 100%; overflow-y: auto; padding: 20px; }
+    .scr.on { display: flex; flex-direction: column; align-items: center; }
+    h1 { font-size: 2.5em; text-align: center; background: linear-gradient(90deg, #00ffff, #ff00ff, #ffff00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+    h2 { font-size: 1.5em; text-align: center; color: #00ffff; margin-bottom: 15px; }
+    button { padding: 12px 20px; font-size: 1.1em; font-weight: bold; background: rgba(0,255,255,0.1); color: #fff; border: 2px solid #00ffff; border-radius: 12px; cursor: pointer; margin: 5px; transition: 0.2s; }
+    button:active { transform: scale(0.95); background: #00ffff; color: #000; }
+    .menu { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; margin-top: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; width: 100%; max-width: 600px; }
+    .card { background: rgba(255,0,255,0.1); border: 2px solid #ff00ff; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; }
+    .card:active { background: rgba(255,0,255,0.3); }
+    .card .ic { font-size: 2em; margin-bottom: 5px; }
+    .card .tt { font-weight: bold; }
+    .card .dd { font-size: 0.8em; color: #aaa; margin-top: 5px; }
+    .item { background: rgba(0,255,255,0.05); border: 2px solid #00ffff; border-radius: 12px; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+    .item.own { border-color: #00ff88; }
+    .item canvas { background: #000; border-radius: 8px; margin-bottom: 5px; }
+    .item button { width: 100%; padding: 8px; font-size: 0.9em; margin: 5px 0 0 0; }
+    .tabs { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-bottom: 15px; width: 100%; max-width: 600px; }
+    .tabs button { padding: 8px 12px; font-size: 0.9em; }
+    #top { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; padding: 10px; z-index: 10; pointer-events: none; }
+    #top * { pointer-events: auto; }
+    #coins-box { background: #ffd700; color: #000; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+    #game-screen { padding: 0 !important; overflow: hidden !important; }
+    #game-ui { position: absolute; top: 10px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 20px; font-size: 1.5em; font-weight: bold; pointer-events: none; z-index: 5; text-shadow: 0 0 10px #000; }
+    canvas#gameCanvas { display: block; width: 100vw; height: 100vh; background: #000; touch-action: none; }
+    .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 20; padding: 20px; text-align: center; }
+    .overlay.show { display: flex; }
+    .overlay h2 { font-size: 2.5em; margin-bottom: 20px; }
+    .rotate-msg { position: fixed; inset: 0; background: #0f0c29; display: none; justify-content: center; align-items: center; z-index: 9999; text-align: center; font-size: 1.5em; flex-direction: column; }
+    @media (orientation: portrait) {
+        #app { display: none; }
+        .rotate-msg { display: flex; }
+    }
+    .hide { display: none !important; }
 </style>
 </head>
 <body>
+
+<!-- رسالة تدوير الهاتف (إذا كان بالوضع العمودي) -->
+<div class="rotate-msg">
+    <div style="font-size: 4em; margin-bottom: 20px;">🔄</div>
+    <div style="font-weight: bold; color: #00ffff;">يرجى تدوير الهاتف</div>
+    <div style="font-size: 0.7em; color: #aaa; margin-top: 10px;">(اللعبة مصممة للوضع الأفقي)</div>
+</div>
+
 <div id="app">
-<div id="top">
-<div><span id="cb">🪙 <span id="c">0</span></span><span id="gb">💎 <span id="g">0</span></span></div>
-<div><button id="snd" onclick="snd()">🔊</button><button id="thm" onclick="thm()">🌙</button><button id="back" class="hide" onclick="go('menu')">↩</button></div>
+    <div id="top" class="hide">
+        <div id="coins-box">🪙 <span id="coin-display">0</span></div>
+        <button onclick="showScreen('menu')" style="padding: 5px 10px; font-size: 0.8em;">🏠 القائمة</button>
+    </div>
+
+    <!-- الشاشة الرئيسية -->
+    <div id="screen-menu" class="scr on">
+        <h1>🏓 أسطورة البونغ</h1>
+        <div class="menu">
+            <button onclick="showScreen('modes')">🎮 ابدأ اللعب</button>
+            <button onclick="showScreen('shop')">🛒 المتجر</button>
+            <button onclick="showScreen('achievements')">🏆 الإنجازات</button>
+            <button onclick="showScreen('help')">❓ كيف تلعب</button>
+        </div>
+    </div>
+
+    <!-- شاشة الأنماط -->
+    <div id="screen-modes" class="scr">
+        <h2>اختر النمط</h2>
+        <div class="grid">
+            <div class="card" onclick="startGame('classic')"><div class="ic">🎯</div><div class="tt">كلاسيكي</div><div class="dd">أول من 7</div></div>
+            <div class="card" onclick="startGame('survival')"><div class="ic">🔥</div><div class="tt">بقاء</div><div class="dd">سرعة تزيد</div></div>
+            <div class="card" onclick="startGame('multiball')"><div class="ic">🎱</div><div class="tt">كرات متعددة</div><div class="dd">3 كرات</div></div>
+            <div class="card" onclick="startGame('walls')"><div class="ic">🧱</div><div class="tt">عوائق</div><div class="dd">جدران</div></div>
+            <div class="card" onclick="startGame('gravity')"><div class="ic">🌌</div><div class="tt">جاذبية</div><div class="dd">انحناء</div></div>
+            <div class="card" onclick="startGame('mirror')"><div class="ic">🪞</div><div class="tt">مرايا</div><div class="dd">يتبعك</div></div>
+        </div>
+    </div>
+
+    <!-- شاشة المتجر -->
+    <div id="screen-shop" class="scr">
+        <h2>🛒 المتجر</h2>
+        <div class="tabs">
+            <button onclick="setTab('paddles')" id="tab-paddles">🏓 مضارب</button>
+            <button onclick="setTab('balls')" id="tab-balls">⚪ كرات</button>
+            <button onclick="setTab('arenas')" id="tab-arenas">🎨 ملاعب</button>
+        </div>
+        <div id="shop-grid" class="grid"></div>
+    </div>
+
+    <!-- شاشة الإنجازات -->
+    <div id="screen-achievements" class="scr">
+        <h2>🏆 الإنجازات</h2>
+        <div id="ach-list" style="width: 100%; max-width: 500px;"></div>
+    </div>
+
+    <!-- شاشة المساعدة -->
+    <div id="screen-help" class="scr">
+        <h2>❓ كيف تلعب</h2>
+        <div style="font-size: 1.1em; line-height: 2; text-align: right; max-width: 500px; margin: 0 auto;">
+            <p>📱 <b>الهاتف:</b> اسحب إصبعك على الشاشة للتحكم بالمضرب.</p>
+            <p>💻 <b>الكمبيوتر:</b> استخدم الماوس أو الأسهم (↑ ↓).</p>
+            <p>⚡ <b>القدرات:</b> اضغط على زر "القدرة" في اللعب لتفعيلها.</p>
+            <p>🪙 اربح العملات من المباريات لتشتري أشياء جديدة!</p>
+        </div>
+    </div>
+
+    <!-- شاشة اللعب -->
+    <div id="screen-game" class="scr" style="padding: 0;">
+        <div id="game-ui" class="hide">
+            <span id="ui-player">0</span>
+            <span id="ui-timer" style="color: #00ffff;"></span>
+            <span id="ui-ai">0</span>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- القدرات -->
+        <button id="power-btn" class="hide" style="position: absolute; bottom: 20px; right: 20px; z-index: 10; border-radius: 50%; width: 60px; height: 60px; padding: 0; font-size: 1.5em; background: #ffd700; color: #000; border: none;">⚡</button>
+
+        <!-- شاشة النهاية -->
+        <div id="game-over" class="overlay">
+            <h2 id="game-over-title">🏆 فزت!</h2>
+            <p id="game-over-coins" style="font-size: 1.5em; color: #ffd700; margin-bottom: 20px;">+0 🪙</p>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="restartGame()">🔄 إعادة</button>
+                <button onclick="showScreen('menu')">🏠 القائمة</button>
+            </div>
+        </div>
+
+        <!-- شاشة الإيقاف -->
+        <div id="pause-screen" class="overlay">
+            <h2>⏸️ متوقف</h2>
+            <button onclick="togglePause()">▶️ متابعة</button>
+        </div>
+    </div>
 </div>
-<div id="scr-menu" class="scr on"><h1>🏓 PONG LEGEND</h1>
-<div class="menu">
-<button id="btn-tournament" onclick="startTournament()" style="background:linear-gradient(135deg,#ffd700,#ff8800);color:#000">🏆 البطولة</button>
-<button onclick="go('modes')">🎮 ابدأ اللعب</button>
-<button onclick="go('shop')">🛒 المتجر</button>
-<button onclick="go('ach')">🏆 الإنجازات</button>
-<button onclick="go('missions')">📋 المهام اليومية</button>
-<button onclick="go('lb')">📊 الصدارة</button>
-<button onclick="go('stats')">📈 إحصائياتي</button>
-<button onclick="go('rewards')">🎁 المكافآت</button>
-<button onclick="go('help')">❓ كيف تلعب</button>
-</div></div>
-<div id="scr-modes" class="scr"><h2>اختر النمط</h2><div id="diff-bar" style="display:flex;gap:6px;justify-content:center;margin-bottom:14px;flex-wrap:wrap;padding:0 8px"><span style="align-self:center;font-weight:bold;margin-left:8px">الصعوبة:</span></div><div class="grid" id="gm"></div></div>
-<div id="scr-shop" class="scr"><h2>🛒 المتجر</h2>
-<div class="tabs" id="shop-tabs">
-<button onclick="setTab('paddles')" id="tpaddles">🏓 مضارب</button>
-<button onclick="setTab('balls')" id="tballs">⚪ كرات</button>
-<button onclick="setTab('arenas')" id="tarenas">🎨 ملاعب</button>
-<button onclick="setTab('powers')" id="tpowers">⚡ قدرات</button>
-<button onclick="setTab('opponents')" id="topponents">👾 سكنات</button>
-<button onclick="setTab('sounds')" id="tsounds">🎵 موسيقى</button>
-</div>
-<div id="rare-boxes-bar" style="display:flex;gap:8px;justify-content:center;margin:10px 0 12px;flex-wrap:wrap;padding:0 8px">
-<span style="align-self:center;font-weight:bold;margin-left:8px;font-size:.9em">🎁 صناديق نادرة:</span>
-<button onclick="openRareBox('gold')" style="padding:8px 14px;font-size:.82em;border-color:#ffd700;font-weight:bold">🥇 ذهبي (500 🪙)</button>
-<button onclick="openRareBox('legend')" style="padding:8px 14px;font-size:.82em;border-color:#aa00ff;font-weight:bold">💜 أسطوري (1500 🪙)</button>
-<button onclick="openRareBox('gem')" style="padding:8px 14px;font-size:.82em;border-color:#00ffff;font-weight:bold">💎 جواهر (20 💎)</button>
-</div>
-<div class="grid" id="gs"></div></div>
-<div id="scr-ach" class="scr"><h2>🏆 الإنجازات</h2><div id="al" style="max-height:60vh;overflow-y:auto;padding:4px"></div></div>
-<div id="scr-missions" class="scr"><h2>📋 المهام اليومية</h2><p style="text-align:center;color:#aaa;font-size:.85em;margin-bottom:12px">تتجدد كل يوم عند منتصف الليل</p><div id="missions-container" style="max-width:560px;margin:0 auto;max-height:60vh;overflow-y:auto;padding:4px"></div></div>
-<div id="scr-lb" class="scr"><h2>📊 الصدارة</h2><div id="ll" style="max-height:60vh;overflow-y:auto"></div></div>
-<div id="scr-stats" class="scr"><h2>📈 إحصائياتي</h2><div id="sl" style="max-width:500px;margin:0 auto"></div>
-<div style="text-align:center;margin-top:12px"><input type="text" id="ni" placeholder="اسمك..." maxlength="15"><button onclick="saveName()" style="margin-top:8px">💾 حفظ</button></div></div>
-<div id="scr-rewards" class="scr"><h2>🎁 المكافآت</h2>
-<button id="daily" onclick="claimDaily()" style="width:100%;max-width:400px;margin:0 auto;display:block">📅 استلام (50 🪙)</button>
-<h2 style="margin-top:18px">🎡 عجلة الحظ</h2>
-<div style="position:relative;width:280px;height:280px;margin:10px auto"><canvas id="wheel" width="280" height="280" style="border-radius:50%;box-shadow:0 0 30px #ffd70088"></canvas></div>
-<button onclick="spin()" id="spin-btn" style="display:block;margin:10px auto">🎯 لف العجلة</button></div>
-<div id="scr-help" class="scr"><h2>❓ كيف تلعب</h2>
-<div style="line-height:1.9;max-width:560px;margin:0 auto">
-<p>🖱️ الماوس / 👆 اللمس / ⌨️ ↑↓ أو W/S</p>
-<p>⏸️ Esc = إيقاف • ⚡ مسافة = قدرة</p>
-<p>👥 اللاعبين: W/S يسار • ↑↓ يمين</p>
-<p>🪙 عملات • 💎 جواهر من الإنجازات</p>
-<p>🏆 البطولة: 4 أدوار بمكافآت كبيرة</p>
-</div></div>
-<div id="scr-game" class="scr">
-<div id="info"><span>أنت: <span id="sp">0</span></span><span id="timer"></span><span id="streak-display" style="font-size:.85em;color:#ff8800;font-weight:bold"></span><span>الخصم: <span id="sa">0</span></span></div>
-<canvas id="cv" width="800" height="500"></canvas>
-<div id="pause"><h2>⏸️ متوقف</h2><button onclick="togglePause()">▶️ متابعة</button><button onclick="restartCurrentGame()">🔄 إعادة</button><button onclick="go('menu')">🏠 القائمة</button></div>
-<div id="over"><h1 id="ot">🏆 فزت!</h1><p id="oc">+0 🪙</p><div><button onclick="restartCurrentGame()">🔄 إعادة</button><button onclick="go('menu')">🏠 القائمة</button></div></div>
-</div>
-</div><script>
-// ============================================================
-// 1) الصوت
-// ============================================================
-var AC=window.AudioContext||window.webkitAudioContext, ac=null, sndOn=true;
 
-function playToneRaw(f, d, t, v, s){
-  if(!sndOn) return;
-  try{
-    if(!ac) ac=new AC();
-    if(ac.state==='suspended') ac.resume();
-    var o=ac.createOscillator(), g=ac.createGain();
-    o.type=t||'sine';
-    o.frequency.setValueAtTime(f, ac.currentTime);
-    if(s) o.frequency.exponentialRampToValueAtTime(s, ac.currentTime+d);
-    g.gain.setValueAtTime(v||.15, ac.currentTime);
-    g.gain.exponentialRampToValueAtTime(.001, ac.currentTime+d);
-    o.connect(g); g.connect(ac.destination);
-    o.start(); o.stop(ac.currentTime+d);
-  }catch(e){}
-}
-
-// beep موحدة تدعم حزم الصوت (تُعرّف قبل الاستخدام)
-var SOUND_PACKS = {
-  default:   { n:'افتراضي', p:0,    ic:'🎵', desc:'أصوات كلاسيكية', paddleF:440, wallF:220, scoreF:330, wave:'sine' },
-  retro:     { n:'ريترو',   p:300,  ic:'👾', desc:'8-bit قديم',      paddleF:660, wallF:330, scoreF:880, wave:'square' },
-  cinematic: { n:'سينمائي', p:500,  ic:'🎬', desc:'أوركسترا فخم',    paddleF:220, wallF:110, scoreF:440, wave:'triangle' },
-  space:     { n:'فضائي',   p:700,  ic:'🚀', desc:'إلكتروني غريب',   paddleF:550, wallF:275, scoreF:770, wave:'sawtooth' },
-  epic:      { n:'ملحمي',   p:1000, ic:'⚔️', desc:'موسيقى حربية',     paddleF:330, wallF:165, scoreF:550, wave:'sawtooth' }
+<script>
+// --- المتغيرات الأساسية ---
+let state = {
+    coins: 0,
+    owned: { paddles: ['classic'], balls: ['classic'], arenas: ['classic'] },
+    eq: { paddle: 'classic', ball: 'classic', arena: 'classic' },
+    stats: { wins: 0, games: 0, totalPoints: 0 },
+    achievements: {}
 };
 
-function beep(f, d, t, v, s){
-  var pack = (window.S && S.eq && S.eq.sound && SOUND_PACKS[S.eq.sound]) ? SOUND_PACKS[S.eq.sound] : null;
-  if(!pack || S.eq.sound === 'default'){
-    return playToneRaw(f, d, t, v, s);
-  }
-  var newF = f;
-  if(f === 440 || f === 660 || f === 800) newF = pack.paddleF;
-  else if(f === 220 || f === 330) newF = pack.wallF;
-  else if(f === 523 || f === 784 || f === 1047) newF = pack.scoreF;
-  return playToneRaw(newF, d, pack.wave, v, s);
-}
+// تحميل البيانات
+try {
+    const saved = localStorage.getItem('pongMobileSave');
+    if (saved) {
+        const parsed = JSON.parse(saved);
+        state = { ...state, ...parsed };
+    }
+} catch(e) {}
 
-function snd(){
-  sndOn = !sndOn;
-  document.getElementById('snd').textContent = sndOn ? '🔊' : '🔇';
-  if(sndOn) playToneRaw(800, .04, 'square', .08);
-}
+function save() { localStorage.setItem('pongMobileSave', JSON.stringify(state)); }
+function updateCoins() { document.getElementById('coin-display').textContent = state.coins; }
+updateCoins();
 
-function thm(){
-  document.body.classList.toggle('light');
-  document.getElementById('thm').textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
-  S.theme = document.body.classList.contains('light') ? 'light' : 'dark';
-  save();
-  if(sndOn) playToneRaw(800, .04, 'square', .08);
-}
-
-// ============================================================
-// 2) البيانات
-// ============================================================
-var PAD={
-classic:{n:'كلاسيكي',p:0,h:80,sp:1,c:'#0ff',st:'classic'},
-neon:{n:'نيون',p:200,h:90,sp:1.05,c:'#f0f',st:'neon'},
-gold:{n:'ذهبي',p:500,h:100,sp:1.1,c:'#ffd700',st:'gold'},
-fire:{n:'ناري',p:800,h:100,sp:1.15,c:'#f40',st:'fire'},
-ice:{n:'جليدي',p:800,h:110,sp:1.1,c:'#8df',st:'ice'},
-emerald:{n:'زمردي',p:1200,h:115,sp:1.15,c:'#0f8',st:'emerald'},
-rainbow:{n:'قوس قزح',p:1500,h:120,sp:1.2,c:'rainbow',st:'rainbow'},
-plasma:{n:'بلازما',p:2000,h:125,sp:1.22,c:'#f0f',st:'plasma'},
-galaxy:{n:'مجرة',p:2500,h:130,sp:1.25,c:'#a0f',st:'galaxy'},
-legend:{n:'الأسطورة',p:5000,h:150,sp:1.35,c:'#ffd700',st:'legend'}};
-
-var BALL={
-classic:{n:'كلاسيكية',p:0,s:10,sp:1,c:'#fff',st:'classic'},
-neon:{n:'نيون',p:150,s:11,sp:1.05,c:'#0f8',st:'neon'},
-fire:{n:'نارية',p:400,s:12,sp:1.1,c:'#f40',st:'fire'},
-ice:{n:'جليدية',p:400,s:12,sp:1.1,c:'#8df',st:'ice'},
-plasma:{n:'بلازما',p:700,s:13,sp:1.15,c:'#f0f',st:'plasma'},
-rainbow:{n:'قوس قزح',p:1200,s:14,sp:1.2,c:'rainbow',st:'rainbow'},
-star:{n:'نجمة',p:1800,s:15,sp:1.25,c:'#ff0',st:'star'},
-blackhole:{n:'ثقب أسود',p:3000,s:16,sp:1.3,c:'#a0f',st:'blackhole'}};
-
-var ARENA={
-classic:{n:'كلاسيكي',p:0,bg:'#000',ln:'rgba(0,255,255,.15)',st:'classic'},
-space:{n:'فضاء',p:300,bg:'#050015',ln:'rgba(255,255,255,.2)',st:'stars'},
-grid:{n:'شبكة',p:500,bg:'#001122',ln:'rgba(0,255,255,.4)',st:'grid'},
-forest:{n:'غابة',p:800,bg:'#0a1f0a',ln:'rgba(0,255,100,.3)',st:'stars'},
-ocean:{n:'محيط',p:1000,bg:'#001a33',ln:'rgba(0,150,255,.4)',st:'waves'},
-hell:{n:'جحيم',p:1500,bg:'#1a0000',ln:'rgba(255,50,0,.4)',st:'fire'},
-heaven:{n:'جنة',p:2000,bg:'#fffff0',ln:'rgba(255,215,0,.5)',st:'stars'}};
-
-var POWERS={
-  double:{n:'ضربة مزدوجة',p:200,ic:'⚡',d:'تسريع'},
-  shield:{n:'درع',p:300,ic:'🛡️',d:'يمنع نقطة'},
-  grow:{n:'تكبير',p:250,ic:'📏',d:'مضرب أكبر'}
+// --- البيانات ---
+const PADDLES = {
+    classic: { n: 'كلاسيكي', p: 0, h: 80, sp: 1, c: '#0ff' },
+    neon: { n: 'نيون', p: 200, h: 90, sp: 1.05, c: '#f0f' },
+    gold: { n: 'ذهبي', p: 500, h: 100, sp: 1.1, c: '#ffd700' },
+    fire: { n: 'ناري', p: 800, h: 100, sp: 1.15, c: '#f40' },
+    ice: { n: 'جليدي', p: 800, h: 110, sp: 1.1, c: '#8df' },
+    rainbow: { n: 'قوس قزح', p: 1500, h: 120, sp: 1.2, c: 'rainbow' }
+};
+const BALLS = {
+    classic: { n: 'كلاسيكية', p: 0, s: 10, sp: 1, c: '#fff' },
+    neon: { n: 'نيون', p: 150, s: 11, sp: 1.05, c: '#0f8' },
+    fire: { n: 'نارية', p: 400, s: 12, sp: 1.1, c: '#f40' },
+    ice: { n: 'جليدية', p: 400, s: 12, sp: 1.1, c: '#8df' },
+    plasma: { n: 'بلازما', p: 700, s: 13, sp: 1.15, c: '#f0f' },
+    rainbow: { n: 'قوس قزح', p: 1200, s: 14, sp: 1.2, c: 'rainbow' }
+};
+const ARENAS = {
+    classic: { n: 'كلاسيكي', p: 0, bg: '#000', ln: '#333' },
+    space: { n: 'فضاء', p: 300, bg: '#050015', ln: '#445' },
+    grid: { n: 'شبكة', p: 500, bg: '#001122', ln: '#0ff' },
+    forest: { n: 'غابة', p: 800, bg: '#0a1f0a', ln: '#0f8' },
+    ocean: { n: 'محيط', p: 1000, bg: '#001a33', ln: '#08f' },
+    hell: { n: 'جحيم', p: 1500, bg: '#1a0000', ln: '#f40' }
+};
+const ACHIEVEMENTS = {
+    first_win: { n: 'أول فوز', d: 'اربح مباراة واحدة', i: '🥇', check: (s) => s.stats.wins >= 1 },
+    ten_wins: { n: '10 انتصارات', d: 'اربح 10 مباريات', i: '🏅', check: (s) => s.stats.wins >= 10 },
+    hundred_pts: { n: '100 نقطة', d: 'اجمع 100 نقطة', i: '💯', check: (s) => s.stats.totalPoints >= 100 },
+    rich: { n: 'ثري', d: 'اجمع 1000 عملة', i: '💰', check: (s) => s.coins >= 1000 }
 };
 
-var OPPONENT_SKINS = {
-  robot:  { n:'روبوت',  p:0,    c:'#ff3366', ic:'🤖', desc:'الخصم الافتراضي' },
-  ghost:  { n:'شبح',    p:400,  c:'#88ddff', ic:'👻', desc:'أزرق سماوي' },
-  dragon: { n:'تنين',   p:800,  c:'#ff4400', ic:'🐉', desc:'برتقالي ناري' },
-  alien:  { n:'فضائي',  p:1200, c:'#00ff88', ic:'👽', desc:'أخضر غريب' },
-  demon:  { n:'شيطان',  p:2000, c:'#aa00ff', ic:'😈', desc:'بنفسجي مرعب' }
-};
-
-var DIFFS = {
-  easy:    { n:'سهل',    aiSpeed:3.0, aiReact:0.6, reward:1,   color:'#00ff88' },
-  normal:  { n:'متوسط',  aiSpeed:4.5, aiReact:1.0, reward:1.5, color:'#00ffff' },
-  hard:    { n:'صعب',    aiSpeed:6.5, aiReact:1.4, reward:2.5, color:'#ffaa00' },
-  insane:  { n:'مستحيل', aiSpeed:9.0, aiReact:1.9, reward:4,   color:'#ff3366' },
-  legend:  { n:'أسطوري', aiSpeed:14,  aiReact:2.5, reward:6,   color:'#aa00ff' }
-};
-
-var TOURNAMENT = [
-  { diff: 'easy',   name: 'الدور الأول',    reward: 300,  gems: 10 },
-  { diff: 'normal', name: 'نصف النهائي',    reward: 500,  gems: 20 },
-  { diff: 'hard',   name: 'النهائي',        reward: 1000, gems: 40 },
-  { diff: 'legend', name: 'البطولة الكبرى', reward: 2000, gems: 100 }
-];
-
-var RARE_BOXES = {
-  gold:   { n:'صندوق ذهبي',   price:500,  gems:0,  color:'#ffd700', icon:'🥇' },
-  legend: { n:'صندوق أسطوري', price:1500, gems:0,  color:'#aa00ff', icon:'💜' },
-  gem:    { n:'صندوق جواهر',  price:0,    gems:20, color:'#00ffff', icon:'💎' }
-};
-
-var LEGEND_POOLS = {
-  paddles: ['legend','galaxy','plasma'],
-  balls: ['blackhole','star','rainbow'],
-  arenas: ['heaven','hell']
-};
-
-var ACH={
-firstWin:{n:'أول فوز',d:'اربح مباراة',i:'🥇',ch:function(s){return s.stats.wins>=1}},
-tenWins:{n:'10 انتصارات',d:'اربح 10',i:'🏅',ch:function(s){return s.stats.wins>=10}},
-hundredPts:{n:'100 نقطة',d:'اجمع 100',i:'💯',ch:function(s){return s.stats.totalPoints>=100}},
-legendAch:{n:'الأسطورة',d:'اشترِ مضرب الأسطورة',i:'⭐',ch:function(s){return s.owned.paddles.indexOf('legend')!==-1}},
-collector:{n:'جامع',d:'امتلك 5 مضارب',i:'🎯',ch:function(s){return s.owned.paddles.length>=5}},
-rich:{n:'ثري',d:'اجمع 5000 عملة',i:'💰',ch:function(s){return s.coins>=5000}},
-arenaMaster:{n:'سيد الملاعب',d:'امتلك 3 ملاعب',i:'🎨',ch:function(s){return s.owned.arenas.length>=3}},
-survivor:{n:'الناجي',d:'60 ثانية بقاء',i:'🔥',ch:function(s){return s.stats.bestSurvival>=60}}};
-
-var MODES=[
-['classic','🎯','كلاسيكي','أول من 7'],
-['endless','♾️','لا نهائي','حتى 5'],
-['survival','🔥','بقاء','سرعة'],
-['walls','🧱','عوائق','جدران'],
-['gravity','🌌','جاذبية','انحناء'],
-['multiball','🎱','متعددة','3 كرات'],
-['shrink','📉','تقليص','يصغر'],
-['mirror','🪞','مرايا','يتبعك'],
-['twoplayers','👥','لاعبان','W/S ضد ↑↓'],
-['portal','🌀','بوابات','ثقوب'],
-['timed','⏱️','ضد الوقت','60ث'],
-['invisible','👻','غير مرئي','تختفي'],
-['wind','🌪️','رياح','دفع'],
-['boxes','🎁','صناديق','مكافآت'],
-['random','🔀','عشوائي','يتغير!']];
-
-var MISSION_POOL = [
-  { id:'win2',      txt:'اربح مباراتين',         target:2,  reward:100, gem:10, baseFn:function(){ return S.stats.wins; } },
-  { id:'score20',   txt:'سجل 20 نقطة',           target:20, reward:100, gem:10, baseFn:function(){ return S.stats.totalPoints; } },
-  { id:'play3',     txt:'العب 3 مباريات',        target:3,  reward:80,  gem:8,  baseFn:function(){ return S.stats.games; } },
-  { id:'survive30', txt:'العب بقاء 30 ثانية',    target:30, reward:150, gem:15, baseFn:function(){ return S.stats.bestSurvival; } },
-  { id:'collect3',  txt:'امتلك 3 مضارب',         target:3,  reward:120, gem:12, baseFn:function(){ return S.owned.paddles.length; } },
-  { id:'lootBox',   txt:'افتح صندوق حظ',         target:1,  reward:100, gem:10, baseFn:function(){ return S.lootCount || 0; } }
-];
-
-// ============================================================
-// 3) State
-// ============================================================
-var S={
-  coins:0, gems:0, theme:'dark', playerName:'لاعب',
-  owned:{ paddles:['classic'], balls:['classic'], arenas:['classic'], powers:{}, opponents:['robot'], sounds:['default'] },
-  eq:{ paddle:'classic', ball:'classic', arena:'classic', opponent:'robot', sound:'default' },
-  mode:'classic',
-  stats:{ wins:0, losses:0, totalPoints:0, games:0, bestSurvival:0, totalTime:0 },
-  hi:{}, ach:{}, lastDaily:0, lastSpin:0,
-  difficulty:'normal', streak:0, bestStreak:0,
-  missions:null, missionsDate:0,
-  lootCount:0,
-  tournamentProgress:0, tournamentMode:false,
-  trailEnabled:true, slowMo:true,
-  v5Installed:false
-};
-
-try{
-  var sv=localStorage.getItem('pongV7');
-  if(sv){
-    var p=JSON.parse(sv);
-    for(var k in p){
-      if(typeof p[k] === 'object' && p[k] !== null && !Array.isArray(p[k]) && S[k] && typeof S[k] === 'object'){
-        for(var kk in p[k]) S[k][kk] = p[k][kk];
-      } else {
-        S[k] = p[k];
-      }
-    }
-  }
-}catch(e){}
-
-function save(){ try{ localStorage.setItem('pongV7', JSON.stringify(S)); }catch(e){} }
-function coins(){
-  document.getElementById('c').textContent = S.coins;
-  document.getElementById('g').textContent = S.gems;
-}
-</script><script>
-// ============================================================
-// 4) التنقل بين الشاشات
-// ============================================================
-var currentTab = 'paddles';
-
-function go(id){
-  if(sndOn) playToneRaw(800,.04,'square',.08);
-  var ss = document.querySelectorAll('.scr');
-  for(var i=0;i<ss.length;i++) ss[i].classList.remove('on');
-  var target = document.getElementById('scr-'+id);
-  if(target) target.classList.add('on');
-  document.getElementById('back').classList.toggle('hide', id==='menu');
-  
-  if(id==='modes') renderModes();
-  if(id==='shop') renderShop();
-  if(id==='ach') renderAchievements();
-  if(id==='missions') renderMissions();
-  if(id==='lb') renderLeaderboard();
-  if(id==='stats') renderStats();
-  if(id==='rewards') renderRewards();
-  
-  if(id!=='game') stopGame();
-}
-
-function setTab(t){
-  currentTab = t;
-  renderShop();
-}
-
-// ============================================================
-// 5) شاشة الأنماط + الصعوبة
-// ============================================================
-function renderModes(){
-  // شريط الصعوبة
-  var diffBar = document.getElementById('diff-bar');
-  if(diffBar && diffBar.children.length <= 1){
-    for(var dk in DIFFS){
-      (function(k){
-        var b = document.createElement('button');
-        b.id = 'diff-' + k;
-        b.textContent = DIFFS[k].n;
-        b.style.cssText = 'padding:6px 12px;font-size:.85em;border-color:' + DIFFS[k].color;
-        b.onclick = function(){
-          S.difficulty = k;
-          save();
-          updateDiffButtons();
-          if(sndOn) playToneRaw(800,.04,'square',.08);
-        };
-        diffBar.appendChild(b);
-      })(dk);
-    }
-  }
-  updateDiffButtons();
-  
-  // بطاقات الأنماط
-  var g = document.getElementById('gm');
-  g.innerHTML = '';
-  for(var i=0;i<MODES.length;i++){
-    (function(m){
-      var d = document.createElement('div');
-      d.className = 'card';
-      var hs = S.hi[m[0]];
-      d.innerHTML = (hs ? '<div class="hs">🏆 '+hs+'</div>' : '') +
-        '<div class="ic">'+m[1]+'</div><div class="tt">'+m[2]+'</div><div class="dd">'+m[3]+'</div>';
-      d.onclick = function(){ startGame(m[0]); };
-      g.appendChild(d);
-    })(MODES[i]);
-  }
-}
-
-function updateDiffButtons(){
-  for(var dk in DIFFS){
-    var b = document.getElementById('diff-' + dk);
-    if(!b) continue;
-    if(S.difficulty === dk){
-      b.style.background = DIFFS[dk].color;
-      b.style.color = '#000';
-      b.style.fontWeight = 'bold';
-    } else {
-      b.style.background = '#0ff2';
-      b.style.color = document.body.classList.contains('light') ? '#036' : '#fff';
-      b.style.fontWeight = 'normal';
-    }
-  }
-}
-
-// ============================================================
-// 6) المتجر الموحّد
-// ============================================================
-function renderShop(){
-  var allTabs = ['paddles','balls','arenas','powers','opponents','sounds'];
-  for(var t=0;t<allTabs.length;t++){
-    var e = document.getElementById('t'+allTabs[t]);
-    if(e) e.style.opacity = (currentTab===allTabs[t]) ? 1 : .5;
-  }
-  
-  var g = document.getElementById('gs');
-  g.innerHTML = '';
-  
-  // ===== تبويب القدرات =====
-  if(currentTab === 'powers'){
-    for(var pk in POWERS){
-      (function(k){
-        var p = POWERS[k];
-        var q = S.owned.powers[k] || 0;
-        var d = document.createElement('div');
-        d.className = 'item' + (q>0?' own':'');
-        d.innerHTML = '<div style="font-size:2.2em">'+p.ic+'</div>' +
-          '<div class="nn">'+p.n+'</div>' +
-          '<div class="pp">'+p.d+'</div>' +
-          '<div class="pp">'+p.p+' 🪙 • لديك: '+q+'</div>';
-        var b = document.createElement('button');
-        b.textContent = 'شراء';
-        b.onclick = function(){
-          if(S.coins >= p.p){
-            S.coins -= p.p;
-            S.owned.powers[k] = q + 1;
-            beep(600,.1,'triangle',.12,1200);
-            save(); coins(); renderShop();
-          } else {
-            beep(180,.2,'sawtooth',.12);
-            alert('❌ عملات غير كافية!');
-          }
-        };
-        d.appendChild(b);
-        g.appendChild(d);
-      })(pk);
-    }
-    return;
-  }
-  
-  // ===== تبويب السكنات =====
-  if(currentTab === 'opponents'){
-    for(var sk in OPPONENT_SKINS){
-      (function(k){
-        var skin = OPPONENT_SKINS[k];
-        var owned = S.owned.opponents.indexOf(k) !== -1;
-        var eq = S.eq.opponent === k;
-        var d = document.createElement('div');
-        d.className = 'item' + (owned?' own':'') + (eq?' eq':'');
-        
-        var cvs = document.createElement('canvas');
-        cvs.width = 110; cvs.height = 90;
-        var c = cvs.getContext('2d');
-        c.fillStyle = '#050515'; c.fillRect(0,0,110,90);
-        c.shadowBlur = 20; c.shadowColor = skin.c;
-        c.fillStyle = skin.c;
-        c.fillRect(48, 15, 14, 60);
-        c.shadowBlur = 0;
-        c.strokeStyle = 'rgba(255,255,255,0.8)';
-        c.lineWidth = 2;
-        c.strokeRect(49, 16, 12, 58);
-        c.font = 'bold 26px Arial';
-        c.textAlign = 'center';
-        c.fillText(skin.ic, 55, 50);
-        d.appendChild(cvs);
-        
-        var nn = document.createElement('div');
-        nn.className = 'nn'; nn.textContent = skin.n;
-        d.appendChild(nn);
-        
-        var dd = document.createElement('div');
-        dd.className = 'pp'; dd.textContent = skin.desc;
-        d.appendChild(dd);
-        
-        var pp = document.createElement('div');
-        pp.className = 'pp';
-        pp.textContent = owned ? '✅ مملوك' : skin.p + ' 🪙';
-        d.appendChild(pp);
-        
-        var b = document.createElement('button');
-        b.textContent = eq ? '✔️ مُجهّز' : owned ? 'تجهيز' : 'شراء';
-        b.disabled = eq;
-        b.onclick = function(){
-          if(owned){
-            S.eq.opponent = k;
-            beep(800,.04,'square',.08);
-            save(); renderShop();
-          } else if(S.coins >= skin.p){
-            S.coins -= skin.p;
-            S.owned.opponents.push(k);
-            S.eq.opponent = k;
-            beep(600,.1,'triangle',.12,1200);
-            save(); coins(); renderShop();
-          } else {
-            beep(180,.2,'sawtooth',.12);
-            alert('❌ عملات غير كافية!');
-          }
-        };
-        d.appendChild(b);
-        g.appendChild(d);
-      })(sk);
-    }
-    return;
-  }
-  
-  // ===== تبويب الموسيقى =====
-  if(currentTab === 'sounds'){
-    for(var sk2 in SOUND_PACKS){
-      (function(k){
-        var pack = SOUND_PACKS[k];
-        var owned = S.owned.sounds.indexOf(k) !== -1;
-        var eq = S.eq.sound === k;
-        var d = document.createElement('div');
-        d.className = 'item' + (owned?' own':'') + (eq?' eq':'');
-        d.innerHTML = '<div style="font-size:2.5em">'+pack.ic+'</div>' +
-          '<div class="nn">'+pack.n+'</div>' +
-          '<div class="pp">'+pack.desc+'</div>' +
-          '<div class="pp">'+(owned?'✅ مملوك':pack.p+' 🪙')+'</div>';
-        var b = document.createElement('button');
-        b.textContent = eq ? '✔️ مُجهّز' : owned ? 'تجهيز' : 'شراء';
-        b.disabled = eq;
-        b.onclick = function(){
-          if(owned){
-            S.eq.sound = k;
-            playToneRaw(pack.paddleF, .1, 'square', .12);
-            save(); renderShop();
-          } else if(S.coins >= pack.p){
-            S.coins -= pack.p;
-            S.owned.sounds.push(k);
-            S.eq.sound = k;
-            playToneRaw(pack.paddleF, .15, 'triangle', .12);
-            save(); coins(); renderShop();
-          } else {
-            beep(180,.2,'sawtooth',.12);
-            alert('❌ عملات غير كافية!');
-          }
-        };
-        d.appendChild(b);
-        g.appendChild(d);
-      })(sk2);
-    }
-    return;
-  }
-  
-  // ===== تبويبات المضارب/الكرات/الملاعب =====
-  var data = currentTab==='paddles' ? PAD : currentTab==='balls' ? BALL : ARENA;
-  var eqK = currentTab==='paddles' ? 'paddle' : currentTab==='balls' ? 'ball' : 'arena';
-  
-  for(var k in data){
-    (function(key){
-      var it = data[key];
-      var owned = S.owned[currentTab].indexOf(key) !== -1;
-      var eq = S.eq[eqK] === key;
-      var d = document.createElement('div');
-      d.className = 'item' + (owned?' own':'') + (eq?' eq':'');
-      
-      var cvs = document.createElement('canvas');
-      cvs.width = 110; cvs.height = 90;
-      var c = cvs.getContext('2d');
-      c.fillStyle = '#050515'; c.fillRect(0,0,110,90);
-      
-      if(currentTab === 'arenas'){
-        c.fillStyle = it.bg; c.fillRect(0,0,110,90);
-        c.strokeStyle = it.ln; c.lineWidth = 2;
-        c.setLineDash([5,5]);
-        c.beginPath(); c.moveTo(55,0); c.lineTo(55,90); c.stroke();
-        c.setLineDash([]);
-        if(it.st==='stars'){
-          for(var si=0;si<10;si++){
-            c.fillStyle='rgba(255,255,255,'+(0.3+0.7*Math.random())+')';
-            c.fillRect(Math.random()*110,Math.random()*90,2,2);
-          }
-        } else if(it.st==='grid'){
-          c.strokeStyle='rgba(0,255,255,0.3)'; c.lineWidth=1;
-          for(var gi=0;gi<110;gi+=22){c.beginPath();c.moveTo(gi,0);c.lineTo(gi,90);c.stroke();}
-          for(var gj=0;gj<90;gj+=22){c.beginPath();c.moveTo(0,gj);c.lineTo(110,gj);c.stroke();}
-        } else if(it.st==='waves'){
-          c.strokeStyle='rgba(0,150,255,0.5)'; c.lineWidth=2;
-          for(var wi=0;wi<3;wi++){
-            c.beginPath();
-            for(var wx=0;wx<110;wx+=5){
-              var wy=30+wi*22+Math.sin(wx*0.15+wi)*5;
-              if(wx===0)c.moveTo(wx,wy);else c.lineTo(wx,wy);
-            }
-            c.stroke();
-          }
-        } else if(it.st==='fire'){
-          for(var fi=0;fi<18;fi++){
-            c.fillStyle='rgba(255,'+Math.floor(Math.random()*150)+',0,0.7)';
-            c.fillRect(Math.random()*110,90-Math.random()*35,2,4);
-          }
-        }
-        c.strokeStyle=it.ln;c.lineWidth=2;c.strokeRect(1,1,108,88);
-      } else if(currentTab === 'paddles'){
-        var cc = it.c;
-        if(cc==='rainbow') cc='hsl('+((performance.now()/10)%360)+',100%,60%)';
-        var ph = Math.min(it.h,70);
-        c.shadowBlur=20; c.shadowColor=cc; c.fillStyle=cc;
-        c.fillRect(48,45-ph/2,14,ph);
-        c.shadowBlur=0;
-        c.strokeStyle='rgba(255,255,255,0.6)'; c.lineWidth=1.5;
-        c.strokeRect(49,45-ph/2+1,12,ph-2);
-        if(it.p>=800){
-          for(var di=0;di<3;di++){
-            c.fillStyle='rgba(255,255,255,0.7)';
-            c.fillRect(52,45-ph/2+8+di*(ph/3.5),6,2);
-          }
-        }
-      } else {
-        var cb = it.c;
-        if(cb==='rainbow') cb='hsl('+((performance.now()/5)%360)+',100%,60%)';
-        var br = Math.min(it.s*2.2,32);
-        c.shadowBlur=22; c.shadowColor=cb; c.fillStyle=cb;
-        c.beginPath(); c.arc(55,45,br,0,Math.PI*2); c.fill();
-        c.shadowBlur=0;
-        var grad=c.createRadialGradient(50,40,2,55,45,br);
-        grad.addColorStop(0,'rgba(255,255,255,0.85)');
-        grad.addColorStop(0.5,'rgba(255,255,255,0.15)');
-        grad.addColorStop(1,'rgba(0,0,0,0.3)');
-        c.fillStyle=grad;
-        c.beginPath(); c.arc(55,45,br,0,Math.PI*2); c.fill();
-        c.strokeStyle='rgba(255,255,255,0.5)'; c.lineWidth=1.5;
-        c.beginPath(); c.arc(55,45,br+1,0,Math.PI*2); c.stroke();
-      }
-      
-      d.appendChild(cvs);
-      var nn = document.createElement('div');
-      nn.className='nn'; nn.textContent=it.n;
-      d.appendChild(nn);
-      var pp = document.createElement('div');
-      pp.className='pp'; pp.textContent = owned?'✅ مملوك':it.p+' 🪙';
-      d.appendChild(pp);
-      var b = document.createElement('button');
-      b.textContent = eq ? '✔️ مُجهّز' : owned ? 'تجهيز' : 'شراء';
-      b.disabled = eq;
-      b.onclick = function(){
-        if(owned){
-          S.eq[eqK] = key;
-          beep(800,.04,'square',.08);
-          save(); renderShop();
-        } else if(S.coins >= it.p){
-          S.coins -= it.p;
-          S.owned[currentTab].push(key);
-          S.eq[eqK] = key;
-          beep(600,.1,'triangle',.12,1200);
-          save(); coins(); renderShop();
-        } else {
-          beep(180,.2,'sawtooth',.12);
-          alert('❌ عملات غير كافية!');
-        }
-      };
-      d.appendChild(b);
-      g.appendChild(d);
-    })(k);
-  }
-}
-
-function loot(){
-  if(S.coins < 300){
-    beep(180,.2,'sawtooth',.12);
-    alert('❌ تحتاج 300 عملة!');
-    return;
-  }
-  S.coins -= 300;
-  var pools = [PAD, BALL, ARENA];
-  var names = ['paddles','balls','arenas'];
-  var pi = Math.floor(Math.random()*3);
-  var pool = pools[pi];
-  var keys = [];
-  for(var k in pool) if(S.owned[names[pi]].indexOf(k) === -1) keys.push(k);
-  if(keys.length === 0){
-    var bonus = 100 + Math.floor(Math.random()*200);
-    S.coins += bonus;
-    beep(600,.1,'triangle',.12,1200);
-    save(); coins();
-    alert('🎁 كل العناصر مملوكة! حصلت على '+bonus+' عملة.');
-    return;
-  }
-  var picked = keys[Math.floor(Math.random()*keys.length)];
-  S.owned[names[pi]].push(picked);
-  beep(523,.15);
-  setTimeout(function(){beep(784,.2);},120);
-  save(); coins(); renderShop();
-  alert('🎁 حصلت على: '+pool[picked].n+'!');
-}
-</script><script>
-// ============================================================
-// 7) الإنجازات
-// ============================================================
-function renderAchievements(){
-  var l = document.getElementById('al');
-  l.innerHTML = '';
-  for(var k in ACH){
-    var a = ACH[k];
-    var un = S.ach[k];
-    var d = document.createElement('div');
-    d.className = 'ach' + (un?' un':'');
-    d.innerHTML = '<div class="aci">'+a.i+'</div>' +
-      '<div class="aci2"><div class="an">'+a.n+'</div><div class="ad">'+a.d+'</div></div>' +
-      '<div style="color:#ffd700;font-weight:bold">'+(un?'✅':'(50💎)')+'</div>';
-    l.appendChild(d);
-  }
-}
-
-function checkAch(){
-  var changed = false;
-  for(var k in ACH){
-    if(!S.ach[k] && ACH[k].ch(S)){
-      S.ach[k] = true;
-      S.gems += 50;
-      beep(523,.15);
-      setTimeout(function(){beep(784,.2);},120);
-      changed = true;
-    }
-  }
-  if(changed) coins();
-}
-
-// ============================================================
-// 8) الصدارة
-// ============================================================
-function renderLeaderboard(){
-  var l = document.getElementById('ll');
-  l.innerHTML = '';
-  var arr = [];
-  for(var m in S.hi) arr.push({m:m, s:S.hi[m]});
-  arr.sort(function(a,b){ return b.s - a.s; });
-  if(arr.length === 0){
-    l.innerHTML = '<p style="text-align:center;color:#aaa">لا توجد نتائج بعد</p>';
-    return;
-  }
-  for(var i=0;i<Math.min(arr.length,10);i++){
-    var e = arr[i];
-    var mi = null;
-    for(var j=0;j<MODES.length;j++) if(MODES[j][0] === e.m) mi = MODES[j];
-    var cls = 'lb' + (i===0?' t1':i===1?' t2':i===2?' t3':'');
-    var d = document.createElement('div');
-    d.className = cls;
-    d.innerHTML = '<span>'+(i+1)+'. '+(mi?mi[1]+' '+mi[2]:e.m)+'</span><span>🏆 '+e.s+'</span>';
-    l.appendChild(d);
-  }
-}
-
-// ============================================================
-// 9) الإحصائيات
-// ============================================================
-function renderStats(){
-  var st = S.stats;
-  var l = document.getElementById('sl');
-  l.innerHTML = 
-    '<div class="sr"><span>👤 الاسم</span><span>'+S.playerName+'</span></div>' +
-    '<div class="sr"><span>🎮 مباريات</span><span>'+st.games+'</span></div>' +
-    '<div class="sr"><span>🏆 انتصارات</span><span>'+st.wins+'</span></div>' +
-    '<div class="sr"><span>💀 خسائر</span><span>'+st.losses+'</span></div>' +
-    '<div class="sr"><span>💯 نقاط</span><span>'+st.totalPoints+'</span></div>' +
-    '<div class="sr"><span>🔥 أفضل بقاء</span><span>'+st.bestSurvival+' ث</span></div>' +
-    '<div class="sr"><span>⏱️ وقت</span><span>'+Math.floor(st.totalTime/60)+' د</span></div>' +
-    '<div class="sr"><span>⚡ أفضل سلسلة</span><span>'+S.bestStreak+'</span></div>';
-  document.getElementById('ni').value = S.playerName;
-}
-
-function saveName(){
-  var v = document.getElementById('ni').value.trim();
-  if(v){
-    S.playerName = v;
-    save();
-    beep(800,.04,'square',.08);
-    alert('✅ تم الحفظ');
-  }
-}
-
-// ============================================================
-// 10) المكافآت + العجلة
-// ============================================================
-function renderRewards(){
-  var now = Date.now(), day = 86400000, four = 14400000;
-  var db = document.getElementById('daily'), sb = document.getElementById('spin-btn');
-  if(now - S.lastDaily < day){
-    db.disabled = true;
-    db.textContent = '⏳ ' + Math.ceil((day-(now-S.lastDaily))/3600000) + ' ساعة';
-  } else {
-    db.disabled = false;
-    db.textContent = '📅 استلام (50 🪙)';
-  }
-  if(now - S.lastSpin < four){
-    sb.disabled = true;
-    sb.textContent = '⏳ ' + Math.ceil((four-(now-S.lastSpin))/60000) + ' دقيقة';
-  } else {
-    sb.disabled = false;
-    sb.textContent = '🎯 لف العجلة';
-  }
-  drawWheel();
-}
-
-function claimDaily(){
-  var now = Date.now();
-  if(now - S.lastDaily < 86400000){
-    beep(180,.2,'sawtooth',.12);
-    return;
-  }
-  S.lastDaily = now;
-  S.coins += 50;
-  beep(600,.1,'triangle',.12,1200);
-  save(); coins(); renderRewards();
-  alert('🎉 حصلت على 50 عملة!');
-}
-
-var PRIZES=[
-  {l:'50 🪙', v:50, t:'c', c:'#ff6b6b'},
-  {l:'100 🪙', v:100, t:'c', c:'#4ecdc4'},
-  {l:'5 💎', v:5, t:'g', c:'#ffe66d'},
-  {l:'200 🪙', v:200, t:'c', c:'#a8e6cf'},
-  {l:'10 💎', v:10, t:'g', c:'#ff8b94'},
-  {l:'500 🪙', v:500, t:'c', c:'#ffd3b6'},
-  {l:'حظ أوفر', v:0, t:'n', c:'#aaa'},
-  {l:'20 💎', v:20, t:'g', c:'#d4a5ff'}
-];
-var wAngle = 0, wSpin = false;
-
-function drawWheel(){
-  var cvs = document.getElementById('wheel');
-  if(!cvs) return;
-  var c = cvs.getContext('2d'), cx=140, cy=140, r=130;
-  var sa = (Math.PI*2) / PRIZES.length;
-  c.clearRect(0,0,280,280);
-  for(var i=0;i<PRIZES.length;i++){
-    var st = i*sa + wAngle, en = st + sa;
-    c.beginPath(); c.moveTo(cx,cy); c.arc(cx,cy,r,st,en); c.closePath();
-    c.fillStyle = PRIZES[i].c; c.fill();
-    c.strokeStyle = '#fff'; c.lineWidth = 2; c.stroke();
-    c.save(); c.translate(cx,cy); c.rotate(st+sa/2);
-    c.textAlign = 'center'; c.fillStyle = '#000';
-    c.font = 'bold 14px Arial';
-    c.fillText(PRIZES[i].l, r*.65, 5);
-    c.restore();
-  }
-  c.beginPath(); c.arc(cx,cy,20,0,Math.PI*2);
-  c.fillStyle='#ffd700'; c.fill();
-  c.strokeStyle='#000'; c.lineWidth=3; c.stroke();
-}
-
-function spin(){
-  if(wSpin) return;
-  var now = Date.now();
-  if(now - S.lastSpin < 14400000){
-    beep(180,.2,'sawtooth',.12);
-    return;
-  }
-  wSpin = true;
-  document.getElementById('spin-btn').disabled = true;
-  var ti = Math.floor(Math.random()*PRIZES.length);
-  var sa = (Math.PI*2)/PRIZES.length;
-  var tA = (Math.PI*2*5) + (Math.PI*1.5) - (ti*sa) - (sa/2);
-  var sA = wAngle, dur = 3500, st = performance.now();
-  function anim(){
-    var el = performance.now() - st;
-    var t = Math.min(el/dur, 1);
-    var e = 1 - Math.pow(1-t, 3);
-    wAngle = sA + (tA-sA)*e;
-    drawWheel();
-    if(t < 1) requestAnimationFrame(anim);
-    else {
-      wAngle = tA % (Math.PI*2);
-      drawWheel();
-      wSpin = false;
-      S.lastSpin = now;
-      var p = PRIZES[ti];
-      if(p.t === 'c'){ S.coins += p.v; beep(600,.1,'triangle',.12,1200); }
-      else if(p.t === 'g'){ S.gems += p.v; beep(523,.15); }
-      else beep(300,.15,'sawtooth',.15,150);
-      save(); coins();
-      setTimeout(function(){
-        alert('🎡 حصلت على: ' + p.l);
-        renderRewards();
-      }, 300);
-    }
-  }
-  anim();
-}
-
-// ============================================================
-// 11) المهام اليومية
-// ============================================================
-function generateMissions(){
-  var today = new Date().toDateString();
-  if(S.missionsDate === today && S.missions) return;
-  var shuffled = MISSION_POOL.slice().sort(function(){ return Math.random() - 0.5; });
-  var picked = shuffled.slice(0, 3);
-  S.missions = picked.map(function(m){
-    return {
-      id: m.id, txt: m.txt, target: m.target,
-      reward: m.reward, gem: m.gem,
-      claimed: false, baseline: -1
-    };
-  });
-  S.missionsDate = today;
-  save();
-}
-
-function getMissionProgress(mi){
-  var poolItem = null;
-  for(var j=0;j<MISSION_POOL.length;j++) if(MISSION_POOL[j].id === mi.id) poolItem = MISSION_POOL[j];
-  if(!poolItem) return { cur:0, target:mi.target };
-  var current = poolItem.baseFn();
-  if(mi.baseline < 0) mi.baseline = current;
-  var prog = Math.max(0, current - mi.baseline);
-  return { cur: Math.min(prog, mi.target), target: mi.target };
-}
-
-function renderMissions(){
-  generateMissions();
-  var container = document.getElementById('missions-container');
-  if(!container) return;
-  container.innerHTML = '';
-  if(!S.missions || S.missions.length === 0){
-    container.innerHTML = '<p style="text-align:center;color:#aaa">لا توجد مهام اليوم</p>';
-    return;
-  }
-  for(var i=0;i<S.missions.length;i++){
-    (function(idx){
-      var mi = S.missions[idx];
-      var pr = getMissionProgress(mi);
-      var pct = Math.min(100, Math.round(pr.cur / pr.target * 100));
-      var div = document.createElement('div');
-      div.className = 'ach' + (mi.claimed ? ' un' : '');
-      var icon = mi.claimed ? '✅' : (pct >= 100 ? '🎁' : '📋');
-      div.innerHTML = '<div class="aci">'+icon+'</div>' +
-        '<div class="aci2"><div class="an">'+mi.txt+'</div>' +
-        '<div class="ad">'+pr.cur+' / '+pr.target+' • +'+mi.reward+' 🪙 +'+mi.gem+' 💎</div>' +
-        '<div style="background:#fff2;height:6px;border-radius:3px;margin-top:4px;overflow:hidden">' +
-        '<div style="background:'+(pct>=100?'#00ff88':'#00ffff')+';height:100%;width:'+pct+'%;transition:width .3s"></div></div></div>';
-      var btn = document.createElement('button');
-      btn.textContent = mi.claimed ? '✅' : (pct >= 100 ? 'استلام' : 'قيد التنفيذ');
-      btn.disabled = mi.claimed || pct < 100;
-      btn.style.padding = '5px 10px';
-      btn.style.fontSize = '.8em';
-      btn.onclick = function(){ claimMission(idx); };
-      div.appendChild(btn);
-      container.appendChild(div);
-    })(i);
-  }
-}
-
-function claimMission(idx){
-  var mi = S.missions[idx];
-  if(!mi || mi.claimed) return;
-  var pr = getMissionProgress(mi);
-  if(pr.cur < pr.target) return;
-  mi.claimed = true;
-  S.coins += mi.reward;
-  S.gems += mi.gem;
-  beep(523,.15);
-  setTimeout(function(){beep(784,.2);},100);
-  save(); coins(); renderMissions();
-  alert('🎉 حصلت على '+mi.reward+' 🪙 + '+mi.gem+' 💎!');
-}
-
-// ============================================================
-// 12) الصناديق النادرة
-// ============================================================
-function openRareBox(type){
-  var box = RARE_BOXES[type];
-  if(!box) return;
-  
-  if(box.gems > 0){
-    if(S.gems < box.gems){ beep(180,.2,'sawtooth',.12); alert('❌ تحتاج '+box.gems+' 💎!'); return; }
-    S.gems -= box.gems;
-  } else {
-    if(S.coins < box.price){ beep(180,.2,'sawtooth',.12); alert('❌ تحتاج '+box.price+' 🪙!'); return; }
-    S.coins -= box.price;
-  }
-  
-  S.lootCount++;
-  var pools = [PAD, BALL, ARENA];
-  var names = ['paddles','balls','arenas'];
-  
-  if(type === 'gem'){
-    if(Math.random() < 0.3){
-      S.gems += 30;
-      beep(523,.15);
-      setTimeout(function(){beep(1047,.2);},150);
-      save(); coins();
-      alert('💎💎💎 حصلت على 30 جوهرة!');
-      return;
-    }
-    var pi = Math.floor(Math.random()*3);
-    var keys = LEGEND_POOLS[names[pi]].filter(function(k){ return S.owned[names[pi]].indexOf(k) === -1; });
-    if(keys.length === 0){
-      S.gems += 30; save(); coins();
-      alert('💎 كل العناصر الأسطورية مملوكة! حصلت على 30 جوهرة.');
-      return;
-    }
-    var picked = keys[Math.floor(Math.random()*keys.length)];
-    S.owned[names[pi]].push(picked);
-    save(); coins();
-    beep(523,.15);
-    setTimeout(function(){beep(659,.15);},100);
-    setTimeout(function(){beep(784,.15);},200);
-    setTimeout(function(){beep(1047,.3);},300);
-    alert('💜💜💜 حصلت على: '+pools[pi][picked].n+'!');
-    return;
-  }
-  
-  if(type === 'legend'){
-    var allLegend = [];
-    for(var pi2=0; pi2<3; pi2++){
-      var lk = LEGEND_POOLS[names[pi2]];
-      for(var ki=0; ki<lk.length; ki++){
-        if(S.owned[names[pi2]].indexOf(lk[ki]) === -1){
-          allLegend.push({ pool: pi2, key: lk[ki] });
-        }
-      }
-    }
-    if(allLegend.length === 0){
-      S.coins += 500; save(); coins();
-      alert('🎁 كل العناصر الأسطورية مملوكة! حصلت على 500 عملة.');
-      return;
-    }
-    var pick = allLegend[Math.floor(Math.random()*allLegend.length)];
-    S.owned[names[pick.pool]].push(pick.key);
-    save(); coins();
-    beep(523,.15);
-    setTimeout(function(){beep(659,.15);},100);
-    setTimeout(function(){beep(784,.15);},200);
-    setTimeout(function(){beep(1047,.3);},300);
-    alert('💜💜💜 حصلت على: '+pools[pick.pool][pick.key].n+'!');
-    return;
-  }
-  
-  var candidates = [];
-  for(var pi3=0; pi3<3; pi3++){
-    for(var k in pools[pi3]){
-      var item = pools[pi3][k];
-      if(S.owned[names[pi3]].indexOf(k) === -1 && item.p >= 800){
-        candidates.push({ pool: pi3, key: k });
-      }
-    }
-  }
-  if(candidates.length === 0){
-    for(var pi4=0; pi4<3; pi4++){
-      for(var k4 in pools[pi4]){
-        if(S.owned[names[pi4]].indexOf(k4) === -1) candidates.push({ pool: pi4, key: k4 });
-      }
-    }
-  }
-  if(candidates.length === 0){
-    S.coins += 300; save(); coins();
-    alert('🎁 كل العناصر مملوكة! حصلت على 300 عملة.');
-    return;
-  }
-  var pick2 = candidates[Math.floor(Math.random()*candidates.length)];
-  S.owned[names[pick2.pool]].push(pick2.key);
-  save(); coins();
-  beep(523,.15);
-  setTimeout(function(){beep(784,.2);},120);
-  alert('🥇 حصلت على: '+pools[pick2.pool][pick2.key].n+'!');
-}
-</script><script>
-// ============================================================
-// 13) محرك اللعبة
-// ============================================================
-var cv = document.getElementById('cv');
-var cx = cv.getContext('2d');
-var G = null, raf = null, keys = {}, my = null;
-
-document.addEventListener('keydown', function(e){
-  keys[e.key] = true;
-  if(['ArrowUp','ArrowDown',' '].indexOf(e.key) !== -1) e.preventDefault();
-  if(e.key === 'Escape' && G && G.run) togglePause();
-  if(e.key === ' ' && G && G.run && !G.paused) usePower();
-});
-document.addEventListener('keyup', function(e){ keys[e.key] = false; });
-cv.addEventListener('mousemove', function(e){
-  var r = cv.getBoundingClientRect();
-  my = (e.clientY - r.top) * (cv.height / r.height);
-});
-cv.addEventListener('touchmove', function(e){
-  e.preventDefault();
-  var r = cv.getBoundingClientRect();
-  my = (e.touches[0].clientY - r.top) * (cv.height / r.height);
-}, { passive: false });
-cv.addEventListener('touchstart', function(e){
-  e.preventDefault();
-  var r = cv.getBoundingClientRect();
-  my = (e.touches[0].clientY - r.top) * (cv.height / r.height);
-}, { passive: false });
-
-function startGame(mode){
-  if(sndOn) playToneRaw(800,.04,'square',.08);
-  S.mode = mode;
-  go('game');
-  document.getElementById('over').classList.remove('show');
-  document.getElementById('pause').classList.remove('show');
-  
-  var pd = PAD[S.eq.paddle];
-  var bl = BALL[S.eq.ball];
-  var ar = ARENA[S.eq.arena];
-  var skin = OPPONENT_SKINS[S.eq.opponent] || OPPONENT_SKINS.robot;
-  var diff = DIFFS[S.difficulty] || DIFFS.normal;
-  
-  G = {
-    mode: mode,
-    max: (mode==='classic'||mode==='walls'||mode==='portal') ? 7 : 999,
-    ps: 0, as: 0,
-    p: { x:30, y:250, w:14, h:pd.h, sp:pd.sp, c:pd.c, st:pd.st, bh:pd.h, isAI:false },
-    a: { x:756, y:250, w:14, h:pd.h, c:skin.c, st:pd.st, sp:.9, isAI:true, skinIcon:skin.ic, skinName:skin.n },
-    balls: [], walls: [], boxes: [], ar: ar,
-    run: true, paused: false,
-    start: performance.now(),
-    mult: 1, timer: 60, cd: 0,
-    shield: false, grow: 0, combo: 0,
-    parts: [], shake: 0, inv: 0,
-    wind: 1, rndT: 0, rndM: null,
-    aiSpeed: diff.aiSpeed, aiReact: diff.aiReact,
-    slowMoTriggered: false, slowMoTimer: 0
-  };
-  
-  if(mode === 'walls' || mode === 'portal'){
-    G.walls = [
-      {x:395, y:80, w:10, h:100},
-      {x:395, y:320, w:10, h:100}
-    ];
-  }
-  
-  var bc = mode === 'multiball' ? 3 : 1;
-  for(var i=0;i<bc;i++){
-    var b = { x:400, y:250, r:bl.s, sp:6*bl.sp, c:bl.c, st:bl.st, trail:[] };
-    var an = (Math.random()*1.2-.6) + (i%2===0 ? 0 : Math.PI);
-    b.dx = Math.cos(an)*b.sp;
-    b.dy = Math.sin(an)*b.sp;
-    G.balls.push(b);
-  }
-  
-  document.getElementById('sp').textContent = 0;
-  document.getElementById('sa').textContent = 0;
-  document.getElementById('timer').textContent = mode==='timed' ? '⏱️ 60' : '';
-  var sd = document.getElementById('streak-display');
-  if(sd) sd.textContent = S.streak > 0 ? '🔥 سلسلة: ' + S.streak : '';
-  
-  if(raf) cancelAnimationFrame(raf);
-  loop();
-}
-
-function restartCurrentGame(){
-  if(G) startGame(G.mode);
-}
-
-function stopGame(){
-  if(G) G.run = false;
-  if(raf){ cancelAnimationFrame(raf); raf = null; }
-}
-
-function loop(){
-  if(!G || !G.run) return;
-  if(!G.paused) update();
-  draw();
-  raf = requestAnimationFrame(loop);
-}
-
-function togglePause(){
-  if(!G || !G.run) return;
-  G.paused = !G.paused;
-  document.getElementById('pause').classList.toggle('show', G.paused);
-  if(sndOn) playToneRaw(800,.04,'square',.08);
-}
-
-function usePower(){
-  if(!G || G.cd > 0) return;
-  var pw = S.owned.powers;
-  if(pw.double > 0){
-    pw.double--; G.cd = 60;
-    for(var i=0;i<G.balls.length;i++){ G.balls[i].dx*=1.5; G.balls[i].dy*=1.5; }
-    beep(500,.3,'sine',.15,1500);
-    save();
-  } else if(pw.shield > 0){
-    pw.shield--; G.shield = true;
-    beep(500,.3,'sine',.15,1500);
-    save();
-  } else if(pw.grow > 0){
-    pw.grow--; G.grow = 180; G.p.h *= 1.6;
-    beep(500,.3,'sine',.15,1500);
-    save();
-  }
-}
-
-function spawnP(x,y,n){
-  for(var i=0;i<n;i++){
-    var a = Math.random()*Math.PI*2, s = 1+Math.random()*4;
-    G.parts.push({
-      x:x, y:y,
-      vx:Math.cos(a)*s, vy:Math.sin(a)*s,
-      life:20+Math.random()*20,
-      c:'hsl('+Math.random()*360+',100%,60%)'
-    });
-  }
-}
-
-function update(){
-  var g = G, cw = 800, ch = 500;
-  
-  // Slow motion
-  if(g.slowMo && g.slowMoTimer > 0){
-    g.slowMoTimer--;
-    if(g.slowMoTimer % 2 !== 0) return;
-  }
-  
-  if(g.cd > 0) g.cd--;
-  if(g.grow > 0){ g.grow--; if(g.grow === 0) g.p.h = g.p.bh; }
-  if(g.shake > 0) g.shake--;
-  
-  // تحكم اللاعب
-  var tg = null;
-  if(my !== null) tg = my;
-  if(keys['ArrowUp'] || keys['w'] || keys['W']) tg = g.p.y - 30;
-  if(keys['ArrowDown'] || keys['s'] || keys['S']) tg = g.p.y + 30;
-  if(tg !== null) g.p.y += (tg - g.p.y) * .4 * g.p.sp;
-  g.p.y = Math.max(g.p.h/2, Math.min(ch - g.p.h/2, g.p.y));
-  
-  // حركة AI
-  if(g.mode === 'mirror') g.a.y = ch - g.p.y;
-  else if(g.mode === 'twoplayers'){
-    if(keys['ArrowUp']) g.a.y -= 7;
-    if(keys['ArrowDown']) g.a.y += 7;
-  } else {
-    var closest = null, closestX = 0;
-    for(var i=0;i<g.balls.length;i++){
-      var b = g.balls[i];
-      if(b.dx > 0 && (closest === null || b.x > closestX)){ closest = b; closestX = b.x; }
-    }
-    if(closest){
-      var targetY = closest.y + (closest.dy * 10 * g.aiReact);
-      var diff2 = targetY - g.a.y;
-      var move = Math.max(-g.aiSpeed, Math.min(g.aiSpeed, diff2 * 0.25 * g.aiReact));
-      g.a.y += move;
-    }
-  }
-  g.a.y = Math.max(g.a.h/2, Math.min(ch - g.a.h/2, g.a.y));
-  
-  // نمط الوقت
-  if(g.mode === 'timed'){
-    g.timer -= 1/60;
-    document.getElementById('timer').textContent = '⏱️ ' + Math.max(0, Math.ceil(g.timer));
-    if(g.timer <= 0){ endGame(g.ps > g.as); return; }
-  }
-  
-  // نمط عشوائي
-  if(g.mode === 'random'){
-    g.rndT++;
-    if(g.rndT > 600){
-      g.rndT = 0;
-      var om = ['classic','gravity','multiball','survival','walls'];
-      g.rndM = om[Math.floor(Math.random()*om.length)];
-      g.walls = g.rndM === 'walls' ? [{x:cw/2-5, y:80, w:10, h:100}] : [];
-    }
-  }
-  
-  // نمط الرياح
-  if(g.mode === 'wind'){
-    if(Math.random() < .005) g.wind *= -1;
-    for(var wi=0;wi<g.balls.length;wi++) g.balls[wi].dx += g.wind*.02;
-  }
-  
-  // نمط الصناديق
-  if(g.mode === 'boxes' && Math.random() < .003 && g.boxes.length < 3){
-    g.boxes.push({ x:200+Math.random()*(cw-400), y:100+Math.random()*(ch-200), sz:30, hit:false });
-  }
-  
-  // نمط غير مرئي
-  if(g.mode === 'invisible') g.inv = (g.inv+1) % 300;
-  
-  // حركة الكرات
-  for(var bi=0; bi<g.balls.length; bi++){
-    var b = g.balls[bi];
-    if(g.mode === 'gravity' || g.rndM === 'gravity') b.dy += .15;
-    b.x += b.dx; b.y += b.dy;
+// --- التنقل ---
+function showScreen(id) {
+    document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+    document.getElementById('screen-' + id).classList.add('on');
+    document.getElementById('top').classList.toggle('hide', id === 'menu');
     
-    // الذيل
-    b.trail.push({x:b.x, y:b.y, life:15});
-    if(b.trail.length > 15) b.trail.shift();
-    for(var tj=0;tj<b.trail.length;tj++) b.trail[tj].life--;
+    if (id === 'shop') renderShop();
+    if (id === 'achievements') renderAch();
+    if (id !== 'game') stopGame();
+}
+
+// --- المتجر ---
+let currentTab = 'paddles';
+function setTab(t) {
+    currentTab = t;
+    document.querySelectorAll('.tabs button').forEach(b => b.style.background = 'rgba(0,255,255,0.1)');
+    document.getElementById('tab-' + t).style.background = '#00ffff';
+    document.getElementById('tab-' + t).style.color = '#000';
+    renderShop();
+}
+
+function renderShop() {
+    const grid = document.getElementById('shop-grid');
+    grid.innerHTML = '';
+    const data = currentTab === 'paddles' ? PADDLES : currentTab === 'balls' ? BALLS : ARENAS;
+    const eqKey = currentTab === 'paddles' ? 'paddle' : currentTab === 'balls' ? 'ball' : 'arena';
+    
+    for (let key in data) {
+        const item = data[key];
+        const owned = state.owned[currentTab].includes(key);
+        const eq = state.eq[eqKey] === key;
+        
+        const div = document.createElement('div');
+        div.className = 'item' + (owned ? ' own' : '');
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = 100; canvas.height = 60;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#111'; ctx.fillRect(0,0,100,60);
+        
+        if (currentTab === 'paddles') {
+            ctx.fillStyle = item.c === 'rainbow' ? '#f0f' : item.c;
+            ctx.shadowBlur = 15; ctx.shadowColor = ctx.fillStyle;
+            ctx.fillRect(43, 30 - item.h/4, 14, item.h/2);
+        } else if (currentTab === 'balls') {
+            ctx.fillStyle = item.c === 'rainbow' ? '#f0f' : item.c;
+            ctx.shadowBlur = 15; ctx.shadowColor = ctx.fillStyle;
+            ctx.beginPath(); ctx.arc(50, 30, Math.min(item.s*1.5, 25), 0, Math.PI*2); ctx.fill();
+        } else {
+            ctx.fillStyle = item.bg; ctx.fillRect(0,0,100,60);
+            ctx.strokeStyle = item.ln; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(50,0); ctx.lineTo(50,60); ctx.stroke();
+        }
+        
+        div.appendChild(canvas);
+        
+        const nn = document.createElement('div');
+        nn.style.fontWeight = 'bold'; nn.textContent = item.n;
+        div.appendChild(nn);
+        
+        const pp = document.createElement('div');
+        pp.style.color = '#ffd700'; pp.style.fontSize = '0.8em';
+        pp.textContent = owned ? '✅ مملوك' : item.p + ' 🪙';
+        div.appendChild(pp);
+        
+        const btn = document.createElement('button');
+        btn.textContent = eq ? '✔️ مُجهّز' : owned ? 'تجهيز' : 'شراء';
+        btn.disabled = eq;
+        btn.onclick = () => {
+            if (owned) {
+                state.eq[eqKey] = key;
+                save(); renderShop();
+            } else if (state.coins >= item.p) {
+                state.coins -= item.p;
+                state.owned[currentTab].push(key);
+                state.eq[eqKey] = key;
+                save(); updateCoins(); renderShop();
+            } else {
+                alert('❌ عملات غير كافية!');
+            }
+        };
+        div.appendChild(btn);
+        grid.appendChild(div);
+    }
+}
+
+// --- الإنجازات ---
+function renderAch() {
+    const list = document.getElementById('ach-list');
+    list.innerHTML = '';
+    for (let key in ACHIEVEMENTS) {
+        const a = ACHIEVEMENTS[key];
+        const unlocked = state.achievements[key];
+        const div = document.createElement('div');
+        div.className = 'item' + (unlocked ? ' own' : '');
+        div.style.flexDirection = 'row'; div.style.textAlign = 'right'; div.style.gap = '15px';
+        div.innerHTML = `<div style="font-size: 2em;">${a.i}</div>
+                         <div style="flex: 1;"><div style="font-weight: bold;">${a.n}</div>
+                         <div style="font-size: 0.8em; color: #aaa;">${a.d}</div></div>
+                         <div style="color: #ffd700; font-weight: bold;">${unlocked ? '✅' : '(قفل)'}</div>`;
+        list.appendChild(div);
+    }
+}
+
+// --- محرك اللعبة ---
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let game = null;
+let raf = null;
+let touchY = null;
+
+// تعديل أبعاد الكانفس
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    if (game) {
+        game.p.x = 30;
+        game.a.x = canvas.width - 44;
+    }
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// التحكم باللمس
+canvas.addEventListener('touchstart', (e) => { e.preventDefault(); touchY = e.touches[0].clientY; }, { passive: false });
+canvas.addEventListener('touchmove', (e) => { e.preventDefault(); touchY = e.touches[0].clientY; }, { passive: false });
+canvas.addEventListener('mousemove', (e) => { touchY = e.clientY; });
+
+function startGame(mode) {
+    showScreen('game');
+    document.getElementById('game-ui').classList.remove('hide');
+    document.getElementById('power-btn').classList.remove('hide');
+    document.getElementById('game-over').classList.remove('show');
+    document.getElementById('pause-screen').classList.remove('show');
+    
+    const pData = PADDLES[state.eq.paddle];
+    const bData = BALLS[state.eq.ball];
+    const aData = ARENAS[state.eq.arena];
+    
+    game = {
+        mode: mode,
+        running: true,
+        paused: false,
+        ps: 0, as: 0,
+        maxScore: mode === 'classic' ? 7 : 999,
+        player: { x: 30, y: canvas.height/2, w: 14, h: pData.h, sp: pData.sp, c: pData.c },
+        ai: { x: canvas.width - 44, y: canvas.height/2, w: 14, h: pData.h, c: '#ff3366', sp: 0.9 },
+        balls: [],
+        walls: mode === 'walls' ? [
+            { x: canvas.width/2 - 5, y: canvas.height/4, w: 10, h: 80 },
+            { x: canvas.width/2 - 5, y: canvas.height*0.75 - 40, w: 10, h: 80 }
+        ] : [],
+        arena: aData,
+        startTime: performance.now()
+    };
+    
+    const ballCount = mode === 'multiball' ? 3 : 1;
+    for (let i = 0; i < ballCount; i++) {
+        const angle = (Math.random() * 1.2 - 0.6) + (i % 2 === 0 ? 0 : Math.PI);
+        game.balls.push({
+            x: canvas.width/2, y: canvas.height/2,
+            r: bData.s, sp: 6 * bData.sp, c: bData.c,
+            dx: Math.cos(angle) * 6 * bData.sp, dy: Math.sin(angle) * 6 * bData.sp
+        });
+    }
+    
+    document.getElementById('ui-player').textContent = 0;
+    document.getElementById('ui-ai').textContent = 0;
+    
+    if (raf) cancelAnimationFrame(raf);
+    loop();
+}
+
+function stopGame() {
+    if (game) game.running = false;
+    if (raf) cancelAnimationFrame(raf);
+}
+
+function loop() {
+    if (!game || !game.running) return;
+    if (!game.paused) update();
+    draw();
+    raf = requestAnimationFrame(loop);
+}
+
+function togglePause() {
+    if (!game || !game.running) return;
+    game.paused = !game.paused;
+    document.getElementById('pause-screen').classList.toggle('show', game.paused);
+}
+
+function restartGame() {
+    if (game) startGame(game.mode);
+}
+
+function usePower() {
+    // قدرة بسيطة: تكبير المضرب
+    if (!game || !game.running || game.paused) return;
+    game.player.h = 150;
+    setTimeout(() => { if (game) game.player.h = PADDLES[state.eq.paddle].h; }, 2000);
+    document.getElementById('power-btn').disabled = true;
+    setTimeout(() => { document.getElementById('power-btn').disabled = false; }, 5000);
+}
+
+function update() {
+    const g = game;
+    const cw = canvas.width, ch = canvas.height;
+    
+    // حركة اللاعب
+    if (touchY !== null) {
+        g.player.y += (touchY - g.player.y) * 0.5 * g.player.sp;
+    }
+    g.player.y = Math.max(g.player.h/2, Math.min(ch - g.player.h/2, g.player.y));
+    
+    // حركة الذكاء الاصطناعي
+    if (g.mode === 'mirror') {
+        g.ai.y = ch - g.player.y;
+    } else {
+        let targetY = g.balls[0].y;
+        const aiSpeed = 5 + (g.mode === 'survival' ? (performance.now() - g.startTime)/10000 : 0);
+        if (g.ai.y < targetY - 5) g.ai.y += Math.min(aiSpeed, targetY - g.ai.y);
+        if (g.ai.y > targetY + 5) g.ai.y -= Math.min(aiSpeed, g.ai.y - targetY);
+    }
+    g.ai.y = Math.max(g.ai.h/2, Math.min(ch - g.ai.h/2, g.ai.y));
+    
+    // حركة الكرات
+    for (let b of g.balls) {
+        if (g.mode === 'gravity') b.dy += 0.15;
+        b.x += b.dx; b.y += b.dy;
+        
+        // اصطدام بالجدران
+        if (b.y - b.r < 0) { b.y = b.r; b.dy *= -1; }
+        if (b.y + b.r > ch) { b.y = ch - b.r; b.dy *= -1; }
+        
+        // اصطدام بالمضرب
+        if (b.dx < 0 && b.x - b.r < g.player.x + g.player.w/2 && b.x + b.r > g.player.x - g.player.w/2 && b.y > g.player.y - g.player.h/2 && b.y < g.player.y + g.player.h/2) {
+            b.x = g.player.x + g.player.w/2 + b.r;
+            const rel = (b.y - g.player.y) / (g.player.h/2);
+            const speed = Math.hypot(b.dx, b.dy);
+            b.dx = Math.cos(rel * 0.9) * speed;
+            b.dy = Math.sin(rel * 0.9) * speed;
+        }
+        
+        // اصطدام بمضرب الخصم
+        if (b.dx > 0 && b.x + b.r > g.ai.x - g.ai.w/2 && b.x - b.r < g.ai.x + g.ai.w/2 && b.y > g.ai.y - g.ai.h/2 && b.y < g.ai.y + g.ai.h/2) {
+            b.x = g.ai.x - g.ai.w/2 - b.r;
+            const rel = (b.y - g.ai.y) / (g.ai.h/2);
+            const speed = Math.hypot(b.dx, b.dy);
+            b.dx = Math.cos(Math.PI - rel * 0.9) * speed;
+            b.dy = Math.sin(Math.PI - rel * 0.9) * speed;
+        }
+        
+        // تسجيل النقاط
+        if (b.x + b.r < 0) {
+            g.as++;
+            document.getElementById('ui-ai').textContent = g.as;
+            b.x = cw/2; b.y = ch/2; b.dx = Math.abs(b.dx);
+        } else if (b.x - b.r > cw) {
+            g.ps++;
+            document.getElementById('ui-player').textContent = g.ps;
+            b.x = cw/2; b.y = ch/2; b.dx = -Math.abs(b.dx);
+        }
+    }
+    
+    // التحقق من الفوز
+    if (g.mode === 'classic' && (g.ps >= g.maxScore || g.as >= g.maxScore)) {
+        endGame(g.ps >= g.maxScore);
+    }
+}
+
+function draw() {
+    const g = game;
+    const cw = canvas.width, ch = canvas.height;
+    
+    ctx.fillStyle = g.arena.bg;
+    ctx.fillRect(0, 0, cw, ch);
+    
+    ctx.strokeStyle = g.arena.ln;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([10, 10]);
+    ctx.beginPath(); ctx.moveTo(cw/2, 0); ctx.lineTo(cw/2, ch); ctx.stroke();
+    ctx.setLineDash([]);
     
     // الجدران
-    if(b.y - b.r < 0){ b.y = b.r; b.dy = Math.abs(b.dy); beep(220,.06,'triangle',.1); }
-    if(b.y + b.r > ch){ b.y = ch - b.r; b.dy = -Math.abs(b.dy); beep(220,.06,'triangle',.1); }
-    
-    // تصادم اللاعب
-    if(b.dx < 0 && b.x-b.r < g.p.x+g.p.w/2 && b.x+b.r > g.p.x-g.p.w/2 && b.y > g.p.y-g.p.h/2 && b.y < g.p.y+g.p.h/2){
-      b.x = g.p.x + g.p.w/2 + b.r;
-      var r1 = (b.y - g.p.y)/(g.p.h/2), s1 = Math.hypot(b.dx,b.dy), a1 = r1*.9;
-      b.dx = Math.cos(a1)*s1; b.dy = Math.sin(a1)*s1;
-      beep(440,.08,'square',.12,660);
-      g.combo++;
-      if(g.combo >= 5) beep(700,.1,'square',.12,1200);
-      g.shake = 8;
-      spawnP(b.x, b.y, 8);
+    for (let w of g.walls) {
+        ctx.fillStyle = '#f0f'; ctx.fillRect(w.x, w.y, w.w, w.h);
     }
     
-    // تصادم AI
-    if(b.dx > 0 && b.x+b.r > g.a.x-g.a.w/2 && b.x-b.r < g.a.x+g.a.w/2 && b.y > g.a.y-g.a.h/2 && b.y < g.a.y+g.a.h/2){
-      b.x = g.a.x - g.a.w/2 - b.r;
-      var r2 = (b.y - g.a.y)/(g.a.h/2), s2 = Math.hypot(b.dx,b.dy), a2 = Math.PI - r2*.9;
-      b.dx = Math.cos(a2)*s2; b.dy = Math.sin(a2)*s2;
-      beep(440,.08,'square',.12,660);
-      spawnP(b.x, b.y, 8);
-    }
+    // رسم المضارب
+    const drawPad = (p) => {
+        let color = p.c === 'rainbow' ? `hsl(${(performance.now()/10)%360}, 100%, 60%)` : p.c;
+        ctx.fillStyle = color;
+        ctx.shadowBlur = 20; ctx.shadowColor = color;
+        ctx.fillRect(p.x - p.w/2, p.y - p.h/2, p.w, p.h);
+        ctx.shadowBlur = 0;
+    };
+    drawPad(g.player);
+    drawPad(g.ai);
     
-    // تصادم الجدران
-    for(var w=0; w<g.walls.length; w++){
-      var wl = g.walls[w];
-      if(b.x+b.r > wl.x && b.x-b.r < wl.x+wl.w && b.y+b.r > wl.y && b.y-b.r < wl.y+wl.h){
-        var oL = (b.x+b.r)-wl.x, oR = (wl.x+wl.w)-(b.x-b.r);
-        var oT = (b.y+b.r)-wl.y, oB = (wl.y+wl.h)-(b.y-b.r);
-        var m = Math.min(oL,oR,oT,oB);
-        if(m===oL){ b.x=wl.x-b.r; b.dx=-Math.abs(b.dx); }
-        else if(m===oR){ b.x=wl.x+wl.w+b.r; b.dx=Math.abs(b.dx); }
-        else if(m===oT){ b.y=wl.y-b.r; b.dy=-Math.abs(b.dy); }
-        else { b.y=wl.y+wl.h+b.r; b.dy=Math.abs(b.dy); }
-        beep(220,.06,'triangle',.1);
-      }
+    // رسم الكرات
+    for (let b of g.balls) {
+        let color = b.c === 'rainbow' ? `hsl(${(performance.now()/5)%360}, 100%, 60%)` : b.c;
+        ctx.fillStyle = color;
+        ctx.shadowBlur = 20; ctx.shadowColor = color;
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI*2); ctx.fill();
+        ctx.shadowBlur = 0;
     }
-    
-    // تصادم الصناديق
-    for(var bx=0; bx<g.boxes.length; bx++){
-      var box = g.boxes[bx];
-      if(box.hit) continue;
-      if(b.x+b.r > box.x-box.sz/2 && b.x-b.r < box.x+box.sz/2 && b.y+b.r > box.y-box.sz/2 && b.y-b.r < box.y+box.sz/2){
-        box.hit = true;
-        var bonus = 20 + Math.floor(Math.random()*30);
-        S.coins += bonus;
-        spawnP(box.x, box.y, 15);
-        beep(600,.1,'triangle',.12,1200);
-        coins();
-      }
-    }
-    
-    // النقاط
-    if(b.x + b.r < 0){
-      if(g.shield){
-        g.shield = false;
-        b.x = cw/2; b.y = ch/2; b.dx = Math.abs(b.dx);
-        beep(500,.3,'sine',.15,1500);
-      } else {
-        g.as++;
-        document.getElementById('sa').textContent = g.as;
-        beep(300,.15,'sawtooth',.15,150);
-        g.combo = 0;
-        spawnP(0, b.y, 20);
-        b.x = cw/2; b.y = ch/2; b.dx = Math.abs(b.dx);
-      }
-    } else if(b.x - b.r > cw){
-      g.ps++;
-      document.getElementById('sp').textContent = g.ps;
-      beep(330,.1,'sine',.15);
-      S.stats.totalPoints++;
-      g.combo = 0;
-      spawnP(cw, b.y, 20);
-      b.x = cw/2; b.y = ch/2; b.dx = -Math.abs(b.dx);
-    }
-  }
-  
-  g.boxes = g.boxes.filter(function(bx){ return !bx.hit; });
-  
-  // Survival mode
-  if(g.mode === 'survival'){
-    g.mult = 1 + (performance.now() - g.start)/1000 * .05;
-    var sec = Math.floor((performance.now() - g.start)/1000);
-    if(sec > S.stats.bestSurvival) S.stats.bestSurvival = sec;
-    for(var k2=0;k2<g.balls.length;k2++){
-      var bb = g.balls[k2];
-      var cs = Math.hypot(bb.dx,bb.dy), ts = bb.sp*g.mult;
-      if(cs > 0){ bb.dx *= ts/cs; bb.dy *= ts/cs; }
-    }
-  }
-  
-  if(g.mode === 'shrink') g.p.h = Math.max(30, g.p.bh - g.ps*6);
-  
-  // الجزيئات
-  for(var p=0; p<g.parts.length; p++){
-    var pt = g.parts[p];
-    pt.x += pt.vx; pt.y += pt.vy; pt.life--; pt.vy += .1;
-  }
-  g.parts = g.parts.filter(function(pt){ return pt.life > 0; });
-  
-  // Slow Motion trigger
-  var maxScore = (g.mode==='classic'||g.mode==='walls'||g.mode==='portal') ? g.max : 5;
-  if(!g.slowMoTriggered && (g.ps === maxScore-1 || g.as === maxScore-1)){
-    g.slowMo = true;
-    g.slowMoTimer = 60;
-    g.slowMoTriggered = true;
-    if(sndOn){
-      beep(880, .3, 'sine', .1, 440);
-      setTimeout(function(){ beep(660, .4, 'sine', .08, 220); }, 200);
-    }
-  }
-  
-  // الفوز/الخسارة
-  if((g.mode==='classic'||g.mode==='walls'||g.mode==='portal') && g.ps >= g.max) endGame(true);
-  else if((g.mode==='classic'||g.mode==='walls'||g.mode==='portal') && g.as >= g.max) endGame(false);
-  else if(g.mode === 'endless' && g.as >= 5) endGame(false);
-}
-</script><script>
-// ============================================================
-// 14) الرسم
-// ============================================================
-function drawPad(p, t){
-  var c = p.c;
-  if(p.isAI){
-    c = p.c || '#ff3366';
-  } else if(c === 'rainbow'){
-    c = 'hsl(' + ((t/10)%360) + ',100%,60%)';
-  }
-  cx.save();
-  cx.shadowBlur = 22; cx.shadowColor = c;
-  cx.fillStyle = c;
-  cx.fillRect(p.x-p.w/2, p.y-p.h/2, p.w, p.h);
-  cx.shadowBlur = 0;
-  cx.strokeStyle = p.isAI ? 'rgba(255,200,200,0.9)' : 'rgba(200,255,255,0.9)';
-  cx.lineWidth = 2;
-  cx.strokeRect(p.x-p.w/2+1, p.y-p.h/2+1, p.w-2, p.h-2);
-  if(p.st === 'gold' || p.st === 'legend'){
-    cx.fillStyle = 'rgba(255,255,255,0.7)';
-    for(var di=0; di<3; di++){
-      cx.fillRect(p.x-p.w/2+3, p.y-p.h/2+8+di*(p.h/3.5), p.w-6, 2);
-    }
-  }
-  // أيقونة السكن فوق مضرب الخصم
-  if(p.isAI && p.skinIcon){
-    cx.font = 'bold 18px Arial';
-    cx.textAlign = 'center';
-    cx.fillStyle = '#fff';
-    cx.shadowBlur = 8;
-    cx.shadowColor = '#000';
-    cx.fillText(p.skinIcon, p.x + p.w/2 + 15, p.y - p.h/2 - 5);
-  }
-  cx.restore();
 }
 
-function drawBall(b, t){
-  var c = b.c;
-  if(c === 'rainbow') c = 'hsl(' + ((t/5)%360) + ',100%,60%)';
-  cx.save();
-  cx.shadowBlur = 22; cx.shadowColor = c;
-  cx.fillStyle = c;
-  cx.beginPath(); cx.arc(b.x, b.y, b.r, 0, Math.PI*2); cx.fill();
-  cx.shadowBlur = 0;
-  var grad = cx.createRadialGradient(b.x-b.r/3, b.y-b.r/3, 1, b.x, b.y, b.r);
-  grad.addColorStop(0, 'rgba(255,255,255,0.85)');
-  grad.addColorStop(0.5, 'rgba(255,255,255,0.15)');
-  grad.addColorStop(1, 'rgba(0,0,0,0.35)');
-  cx.fillStyle = grad;
-  cx.beginPath(); cx.arc(b.x, b.y, b.r, 0, Math.PI*2); cx.fill();
-  if(b.st === 'star'){
-    cx.strokeStyle = 'rgba(255,255,255,0.7)';
-    cx.lineWidth = 1.5;
-    for(var si=0; si<5; si++){
-      var ang = si*Math.PI*2/5 + t*0.003;
-      cx.beginPath();
-      cx.moveTo(b.x, b.y);
-      cx.lineTo(b.x+Math.cos(ang)*b.r*1.4, b.y+Math.sin(ang)*b.r*1.4);
-      cx.stroke();
-    }
-  }
-  cx.restore();
-}
-
-function draw(){
-  var g = G;
-  if(!g) return;
-  var cw = 800, ch = 500, sx = 0, sy = 0;
-  if(g.shake > 0){
-    sx = (Math.random()-.5)*6;
-    sy = (Math.random()-.5)*6;
-  }
-  cx.save();
-  cx.translate(sx, sy);
-  
-  // خلفية الملعب
-  cx.fillStyle = g.ar.bg;
-  cx.fillRect(-10, -10, cw+20, ch+20);
-  
-  if(g.ar.st === 'stars'){
-    for(var s=0; s<30; s++){
-      var px = (s*137)%cw, py = (s*71 + performance.now()*.02)%ch;
-      cx.fillStyle = 'rgba(255,255,255,' + (.3+.7*Math.sin(performance.now()*.001+s)) + ')';
-      cx.fillRect(px, py, 1.5, 1.5);
-    }
-  } else if(g.ar.st === 'grid'){
-    cx.strokeStyle = 'rgba(0,255,255,.1)';
-    cx.lineWidth = 1;
-    for(var gx=0; gx<cw; gx+=40){ cx.beginPath(); cx.moveTo(gx,0); cx.lineTo(gx,ch); cx.stroke(); }
-    for(var gy=0; gy<ch; gy+=40){ cx.beginPath(); cx.moveTo(0,gy); cx.lineTo(cw,gy); cx.stroke(); }
-  } else if(g.ar.st === 'waves'){
-    cx.strokeStyle = 'rgba(0,150,255,.15)';
-    cx.lineWidth = 2;
-    for(var wv=0; wv<5; wv++){
-      cx.beginPath();
-      for(var wx=0; wx<cw; wx+=10){
-        var wy = wv*100+50+Math.sin(wx*.02+performance.now()*.002+wv)*20;
-        if(wx===0) cx.moveTo(wx,wy); else cx.lineTo(wx,wy);
-      }
-      cx.stroke();
-    }
-  } else if(g.ar.st === 'fire'){
-    for(var f=0; f<20; f++){
-      var fx = Math.random()*cw, fy = ch-Math.random()*100;
-      cx.fillStyle = 'rgba(255,' + Math.floor(Math.random()*100) + ',0,.5)';
-      cx.fillRect(fx, fy, 3, 3);
-    }
-  }
-  
-  // خط المنتصف
-  cx.strokeStyle = g.ar.ln;
-  cx.lineWidth = 2;
-  cx.setLineDash([10,10]);
-  cx.beginPath(); cx.moveTo(cw/2, 0); cx.lineTo(cw/2, ch); cx.stroke();
-  cx.setLineDash([]);
-  
-  // ذيل الكرة
-  for(var i=0; i<g.balls.length; i++){
-    var b = g.balls[i];
-    if(!b.trail) continue;
-    for(var j=0; j<b.trail.length; j++){
-      var tr = b.trail[j];
-      if(tr.life <= 0) continue;
-      var alpha = tr.life / 15 * 0.6;
-      var rad = b.r * (tr.life / 15);
-      var col = b.c;
-      if(col === 'rainbow') col = 'hsl(' + ((performance.now()/5 + j*20)%360) + ',100%,60%)';
-      cx.fillStyle = col;
-      cx.globalAlpha = alpha;
-      cx.beginPath(); cx.arc(tr.x, tr.y, rad, 0, Math.PI*2); cx.fill();
-    }
-    cx.globalAlpha = 1;
-  }
-  
-  // الجدران
-  for(var w=0; w<g.walls.length; w++){
-    var wl = g.walls[w];
-    cx.fillStyle = '#f0f';
-    cx.shadowBlur = 15; cx.shadowColor = '#f0f';
-    cx.fillRect(wl.x, wl.y, wl.w, wl.h);
-    cx.shadowBlur = 0;
-  }
-  
-  // الصناديق
-  for(var bx=0; bx<g.boxes.length; bx++){
-    var box = g.boxes[bx];
-    cx.fillStyle = '#ffd700';
-    cx.shadowBlur = 20; cx.shadowColor = '#ffd700';
-    cx.fillRect(box.x-box.sz/2, box.y-box.sz/2, box.sz, box.sz);
-    cx.shadowBlur = 0;
-    cx.fillStyle = '#000';
-    cx.font = 'bold 16px Arial';
-    cx.textAlign = 'center';
-    cx.fillText('🎁', box.x, box.y+6);
-  }
-  
-  var t = performance.now();
-  
-  // الدرع
-  if(g.shield){
-    cx.strokeStyle = '#0ff';
-    cx.lineWidth = 3;
-    cx.shadowBlur = 20; cx.shadowColor = '#0ff';
-    cx.beginPath(); cx.arc(g.p.x, g.p.y, g.p.h/2+20, 0, Math.PI*2); cx.stroke();
-    cx.shadowBlur = 0;
-  }
-  
-  // المضارب
-  drawPad(g.p, t);
-  drawPad(g.a, t);
-  
-  // الكرات
-  for(var i2=0; i2<g.balls.length; i2++){
-    var b2 = g.balls[i2];
-    if(g.mode === 'invisible' && g.inv > 150 && b2.x > 160 && b2.x < 640) cx.globalAlpha = .15;
-    drawBall(b2, t);
-    cx.globalAlpha = 1;
-  }
-  
-  // الجزيئات
-  for(var p=0; p<g.parts.length; p++){
-    var pt = g.parts[p];
-    cx.fillStyle = pt.c;
-    cx.globalAlpha = pt.life/40;
-    cx.fillRect(pt.x-2, pt.y-2, 4, 4);
-  }
-  cx.globalAlpha = 1;
-  
-  // Combo
-  if(g.combo >= 3){
-    cx.fillStyle = '#ffd700';
-    cx.font = 'bold 28px Arial';
-    cx.textAlign = 'center';
-    cx.shadowBlur = 15; cx.shadowColor = '#ffd700';
-    cx.fillText('COMBO x'+g.combo+'!', cw/2, 50);
-    cx.shadowBlur = 0;
-  }
-  
-  // نص القدرة
-  if(g.cd > 0){
-    cx.fillStyle = 'rgba(255,255,255,.5)';
-    cx.font = '14px Arial';
-    cx.textAlign = 'left';
-    cx.fillText('⚡ جاهز بعد ' + Math.ceil(g.cd/60) + 'ث', 10, ch-10);
-  } else if(S.owned.powers.double > 0 || S.owned.powers.shield > 0 || S.owned.powers.grow > 0){
-    cx.fillStyle = '#ffd700';
-    cx.font = 'bold 14px Arial';
-    cx.textAlign = 'left';
-    cx.fillText('⚡ اضغط مسافة', 10, ch-10);
-  }
-  
-  // Slow Motion flash
-  if(g.slowMo && g.slowMoTimer > 50){
-    cx.fillStyle = 'rgba(255,255,255,' + ((g.slowMoTimer-50)/10) + ')';
-    cx.fillRect(0, 0, cw, ch);
-  }
-  
-  cx.restore();
-}
-
-// ============================================================
-// 15) نهاية اللعبة
-// ============================================================
-function endGame(won){
-  G.run = false;
-  document.getElementById('ot').textContent = won ? '🏆 فزت!' : '💀 خسرت!';
-  var r = won ? (100 + G.ps*10) : Math.floor(G.ps*10);
-  S.coins += r;
-  S.stats.games++;
-  if(won) S.stats.wins++; else S.stats.losses++;
-  S.stats.totalTime += Math.floor((performance.now()-G.start)/1000);
-  if(!S.hi[G.mode] || G.ps > S.hi[G.mode]) S.hi[G.mode] = G.ps;
-  
-  // Win Streak
-  if(won){
-    S.streak = (S.streak || 0) + 1;
-    if(S.streak > (S.bestStreak || 0)) S.bestStreak = S.streak;
-  } else {
-    S.streak = 0;
-  }
-  
-  // البطولة
-  if(S.tournamentMode){
-    S.tournamentMode = false;
-    if(won){
-      var idx = S.tournamentProgress;
-      var round = TOURNAMENT[idx];
-      S.coins += round.reward;
-      S.gems += round.gems;
-      S.tournamentProgress = idx + 1;
-      save(); coins();
-      setTimeout(function(){
-        if(S.tournamentProgress >= TOURNAMENT.length){
-          alert('🏆🏆🏆 فزت بالبطولة الكاملة!\n+' + round.reward + ' 🪙 +' + round.gems + ' 💎');
-          S.tournamentProgress = 0;
-          save();
-        } else {
-          alert('✅ تأهلت للدور التالي!\n+' + round.reward + ' 🪙 +' + round.gems + ' 💎');
-        }
-      }, 500);
-    } else {
-      alert('💀 خرجت من البطولة. ابدأ من جديد.');
-      S.tournamentProgress = 0;
-      save();
-    }
-  }
-  
-  checkAch();
-  save(); coins();
-  document.getElementById('oc').textContent = '+' + r + ' 🪙 (مجموع: ' + S.coins + ')';
-  document.getElementById('over').classList.add('show');
-  
-  if(won){
-    beep(523,.15);
-    setTimeout(function(){beep(659,.15);},100);
-    setTimeout(function(){beep(784,.15);},200);
-    setTimeout(function(){beep(1047,.2);},300);
-  } else {
-    beep(300,.15,'sawtooth',.15,150);
-  }
-  
-  // تحديث المهام
-  setTimeout(function(){ if(S.missions) renderMissions(); }, 200);
-  
-  draw();
-}
-
-// ============================================================
-// 16) البطولة
-// ============================================================
-function startTournament(){
-  var idx = S.tournamentProgress;
-  if(idx >= TOURNAMENT.length){
-    S.tournamentProgress = 0;
+function endGame(won) {
+    game.running = false;
+    const reward = won ? 100 + game.ps * 10 : game.ps * 10;
+    state.coins += reward;
+    state.stats.games++;
+    if (won) state.stats.wins++;
     save();
-    idx = 0;
-  }
-  var round = TOURNAMENT[idx];
-  S.difficulty = round.diff;
-  S.tournamentMode = true;
-  save();
-  alert('🏆 ' + round.name + '\nالصعوبة: ' + DIFFS[round.diff].n + '\nالمكافأة: ' + round.reward + ' 🪙 + ' + round.gems + ' 💎');
-  startGame('classic');
+    updateCoins();
+    
+    document.getElementById('game-over-title').textContent = won ? '🏆 فزت!' : '💀 خسرت!';
+    document.getElementById('game-over-coins').textContent = `+${reward} 🪙`;
+    document.getElementById('game-over').classList.add('show');
+    document.getElementById('power-btn').classList.add('hide');
 }
 
-// ============================================================
-// 17) التهيئة
-// ============================================================
-if(S.theme === 'light'){
-  document.body.classList.add('light');
-  document.getElementById('thm').textContent = '☀️';
-}
-coins();
-renderModes();
+// تهيئة الأزرار
+document.getElementById('power-btn').onclick = usePower;
 
-// رسالة ترحيب أول مرة
-if(!S.v5Installed){
-  S.v5Installed = true;
-  save();
-  setTimeout(function(){
-    alert('🎉 مرحباً بك في Pong Legend!\n\nالميزات:\n✅ 15 نمط لعب\n✅ 5 مستويات صعوبة\n✅ Win Streak\n✅ ذيل الكرة + Slow Motion\n✅ مهام يومية\n✅ صناديق نادرة\n✅ بطولة\n✅ سكنات خصم\n✅ حزم موسيقى');
-  }, 1500);
-}
 </script>
 </body>
 </html>
